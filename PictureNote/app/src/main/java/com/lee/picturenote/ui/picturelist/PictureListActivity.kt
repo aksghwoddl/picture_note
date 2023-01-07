@@ -24,25 +24,21 @@ class PictureListActivity : AppCompatActivity() {
         binding = ActivityPictureListBinding.inflate(layoutInflater).also {
             setContentView(it.root)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
         observeData()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getPictureList(1)
     }
     
     private fun observeData() {
         with(viewModel) {
-            model.observe(this@PictureListActivity) {
-                Log.d(TAG, "observeData: ${model.value}")
+            pictures.observe(this@PictureListActivity){ // 사진 목록
+                Log.d(TAG, "observeData: $it")
+                // RecyclerView에 data 처리 부분 구현 필요
+            }
+            
+            page.observe(this@PictureListActivity){ // Page
+                viewModel.getPictureList()
             }
 
-            toastMessage.observe(this@PictureListActivity) {
+            toastMessage.observe(this@PictureListActivity) { // Toast message
                 Toast.makeText(this@PictureListActivity, it, Toast.LENGTH_SHORT).show()
             }
         }

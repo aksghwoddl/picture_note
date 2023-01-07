@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">PictureNote</string>
+    <string name="app_name">픽쳐노트</string>
+    <string name="author">작가</string>
+    <string name="size">크기</string>
+    <!-- Picture List -->
+    <string name="response_fail">정보를 가져오지 못했습니다.</string>
+    <string name="socket_time_out">서버와의 통신시간 제한이 지났습니다.\n다시 시도해주세요.</string>
 </resources>
