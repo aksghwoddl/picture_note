@@ -30,7 +30,6 @@
                 android:value="" />
         </activity>
         <activity android:name=".ui.picturedetail.PictureDetailActivity">
-
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>

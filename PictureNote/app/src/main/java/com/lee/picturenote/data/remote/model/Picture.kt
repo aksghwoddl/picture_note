@@ -2,6 +2,7 @@ package com.lee.picturenote.data.remote.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /**
  * 그림 정보 class
@@ -21,4 +22,4 @@ data class Picture(
     @Expose
     val downloadUrl : String = "" ,
     var isFavorite : Boolean = false
-)
+) : Serializable
