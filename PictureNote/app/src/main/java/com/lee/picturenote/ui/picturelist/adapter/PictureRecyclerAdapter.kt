@@ -3,6 +3,7 @@ package com.lee.picturenote.ui.picturelist.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DiffUtil.DiffResult
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lee.picturenote.R
@@ -27,15 +28,14 @@ class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.Pictu
     /**
      * DiffUtil을 활용하여 List update하는 함수
      * **/
-    fun updateList(list : ArrayList<Picture>){
+    fun updateList(list : ArrayList<Picture>) : DiffResult{
         val diffUtilCallback = DiffUtilCallback(pictures , list)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
-
         pictures.run {
             clear()
             addAll(list)
-            diffResult.dispatchUpdatesTo(this@PictureRecyclerAdapter)
         }
+        return diffResult
     }
 
     inner class PictureListViewHolder(private val binding: PictureItemBinding) : PictureViewHolder(binding) {

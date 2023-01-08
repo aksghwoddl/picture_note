@@ -7,9 +7,11 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
+import com.lee.picturenote.ui.picturelist.adapter.CustomLinearLayoutManager
 import com.lee.picturenote.ui.picturelist.adapter.PictureRecyclerAdapter
 import com.lee.picturenote.ui.picturelist.viewmodel.ListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val TAG = "PictureListActivity"
+private const val RECYCLER_VIEW_BOTTOM = 1
 
 /**
  * 그림 목록 Activity class
@@ -43,8 +46,9 @@ class PictureListActivity : AppCompatActivity() {
         recyclerPictures = arrayListOf()
         pictureRecyclerAdapter = PictureRecyclerAdapter()
         binding.imageRecyclerView.run {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = CustomLinearLayoutManager(context)
             adapter = pictureRecyclerAdapter
+            addOnScrollListener(ScrollListener())
         }
     }
     
@@ -81,12 +85,32 @@ class PictureListActivity : AppCompatActivity() {
             recyclerPictures.addAll(list)
             lifecycleScope.launch{
                 viewModel.setProgress(true)
-                val isEnd = withContext(Dispatchers.Default){
+                val result = withContext(Dispatchers.Default){
                     pictureRecyclerAdapter.updateList(recyclerPictures)
-                    true
                 }
-                if(isEnd){
-                    viewModel.setProgress(false)
+                result.dispatchUpdatesTo(pictureRecyclerAdapter)
+                viewModel.setProgress(false)
+            }
+        }
+    }
+
+    /**
+     * RecyclerView의 scroll listener
+     * **/
+    private inner class ScrollListener : OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if(!recyclerView.canScrollVertically(RECYCLER_VIEW_BOTTOM)){
+                with(viewModel){
+                    isProgress.value?.let {
+                        if(!it){
+                            viewModel.page.value?.let { currentPage ->
+                                viewModel.setPage(currentPage + 1)
+                            }
+                        } else {
+                            Log.d(TAG, "onScrollStateChanged: still loading image!")
+                        }
+                    }
                 }
             }
         }
