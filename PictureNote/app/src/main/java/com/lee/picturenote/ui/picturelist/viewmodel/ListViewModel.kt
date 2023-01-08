@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lee.picturenote.R
-import com.lee.picturenote.common.MainApplication
+import com.lee.picturenote.common.PictureNoteApplication
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.domain.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,11 +35,16 @@ class ListViewModel @Inject constructor(
     val toastMessage : LiveData<String>
     get() = _toastMessage
 
+    private val _isProgress = MutableLiveData<Boolean>()
+    val isProgress : LiveData<Boolean>
+    get() = _isProgress
+
     /**
      * 사진 목록을 가져오는 함수
      * **/
     fun getPictureList() {
         viewModelScope.launch {
+            _isProgress.value = true
             var currentPage = 1
             page.value?.let {
                 currentPage = it
@@ -49,12 +54,13 @@ class ListViewModel @Inject constructor(
                     repository.getPictureList(currentPage)
                 }
                 if(response.isSuccessful){
+                    _isProgress.value = false
                     _pictures.value = response.body()
                 } else {
-                    onError(MainApplication.getInstance().getString(R.string.response_fail))
+                    onError(PictureNoteApplication.getInstance().getString(R.string.response_fail))
                 }
             } catch (exception : SocketTimeoutException){
-                onError(MainApplication.getInstance().getString(R.string.socket_time_out))
+                onError(PictureNoteApplication.getInstance().getString(R.string.socket_time_out))
             }
         }
     }
@@ -67,9 +73,17 @@ class ListViewModel @Inject constructor(
     }
 
     /**
+     * Progress를 setting하는 함수
+     * **/
+    fun setProgress(isProgress : Boolean){
+        _isProgress.value = isProgress
+    }
+
+    /**
      * Error 관리 함수
      * **/
     private fun onError(message : String) {
+        _isProgress.value = false
         _toastMessage.postValue(message)
     }
 }
