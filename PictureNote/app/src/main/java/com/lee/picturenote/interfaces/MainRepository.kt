@@ -1,4 +1,4 @@
-package com.lee.picturenote.domain
+package com.lee.picturenote.interfaces
 
 import com.lee.picturenote.data.remote.model.Picture
 import retrofit2.Response

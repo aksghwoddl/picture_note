@@ -1,6 +1,5 @@
 package com.lee.picturenote.ui.picturelist.viewmodel
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.lee.picturenote.R
 import com.lee.picturenote.common.PictureNoteApplication
 import com.lee.picturenote.data.remote.model.Picture
-import com.lee.picturenote.domain.MainRepository
+import com.lee.picturenote.interfaces.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.net.SocketTimeoutException
@@ -54,7 +53,6 @@ class ListViewModel @Inject constructor(
                     repository.getPictureList(currentPage)
                 }
                 if(response.isSuccessful){
-                    _isProgress.value = false
                     _pictures.value = response.body()
                 } else {
                     onError(PictureNoteApplication.getInstance().getString(R.string.response_fail))

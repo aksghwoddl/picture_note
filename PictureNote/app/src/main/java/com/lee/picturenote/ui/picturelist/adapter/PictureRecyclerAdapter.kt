@@ -9,10 +9,12 @@ import com.bumptech.glide.Glide
 import com.lee.picturenote.R
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.PictureItemBinding
+import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.viewholder.PictureViewHolder
 
 class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.PictureListViewHolder>() {
     private val pictures = ArrayList<Picture>()
+    private lateinit var itemClickListener : OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureListViewHolder {
         val binding = PictureItemBinding.inflate(LayoutInflater.from(parent.context) , parent , false)
@@ -38,6 +40,10 @@ class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.Pictu
         return diffResult
     }
 
+    fun setOnItemClickListener(listener: OnItemClickListener){
+        itemClickListener = listener
+    }
+
     inner class PictureListViewHolder(private val binding: PictureItemBinding) : PictureViewHolder(binding) {
         override fun bind(data: Any) {
             if(data is Picture){
@@ -52,6 +58,14 @@ class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.Pictu
 
                     val size = "${data.width} x ${data.height}"
                     sizeTextView.text = size
+                }
+                val position = adapterPosition
+                if(position != RecyclerView.NO_POSITION){
+                    itemView.setOnClickListener {
+                        if(::itemClickListener.isInitialized){
+                            itemClickListener.onClick(it , data , position)
+                        }
+                    }
                 }
             }
         }

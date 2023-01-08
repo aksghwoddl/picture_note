@@ -2,7 +2,7 @@ package com.lee.picturenote.data
 
 import com.lee.picturenote.data.remote.PictureApi
 import com.lee.picturenote.data.remote.model.Picture
-import com.lee.picturenote.domain.MainRepository
+import com.lee.picturenote.interfaces.MainRepository
 import retrofit2.Response
 import javax.inject.Inject
 

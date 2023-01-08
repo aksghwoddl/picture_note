@@ -1,5 +1,6 @@
 package com.lee.picturenote.ui.picturelist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,8 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.lee.picturenote.EXTRA_SELECTED_PICTURE
+import com.lee.picturenote.EXTRA_SELECTED_POSITION
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
+import com.lee.picturenote.interfaces.OnItemClickListener
+import com.lee.picturenote.ui.picturedetail.PictureDetailActivity
 import com.lee.picturenote.ui.picturelist.adapter.CustomLinearLayoutManager
 import com.lee.picturenote.ui.picturelist.adapter.PictureRecyclerAdapter
 import com.lee.picturenote.ui.picturelist.viewmodel.ListViewModel
@@ -45,6 +50,7 @@ class PictureListActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         recyclerPictures = arrayListOf()
         pictureRecyclerAdapter = PictureRecyclerAdapter()
+        pictureRecyclerAdapter.setOnItemClickListener(ItemClickListener())
         binding.imageRecyclerView.run {
             layoutManager = CustomLinearLayoutManager(context)
             adapter = pictureRecyclerAdapter
@@ -84,7 +90,6 @@ class PictureListActivity : AppCompatActivity() {
         if(::recyclerPictures.isInitialized){
             recyclerPictures.addAll(list)
             lifecycleScope.launch{
-                viewModel.setProgress(true)
                 val result = withContext(Dispatchers.Default){
                     pictureRecyclerAdapter.updateList(recyclerPictures)
                 }
@@ -112,6 +117,16 @@ class PictureListActivity : AppCompatActivity() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private inner class ItemClickListener : OnItemClickListener {
+        override fun onClick(view: View, model: Picture, position: Int) {
+            with(Intent(this@PictureListActivity , PictureDetailActivity::class.java)){
+                putExtra(EXTRA_SELECTED_PICTURE , model)
+                putExtra(EXTRA_SELECTED_POSITION , position)
+                startActivity(this)
             }
         }
     }
