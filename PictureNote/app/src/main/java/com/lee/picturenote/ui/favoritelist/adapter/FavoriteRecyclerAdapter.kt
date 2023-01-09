@@ -53,7 +53,7 @@ class FavoriteRecyclerAdapter :
                         .into(pictureImageView)
 
                     authorTextView.run {
-
+                        isSelected = true
                         text = favoritePicture.author
                     }
                     val size = "${favoritePicture.width} x ${favoritePicture.height}"

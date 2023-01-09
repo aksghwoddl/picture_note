@@ -129,7 +129,7 @@ class PictureDetailActivity : AppCompatActivity() {
                 .subscribe{
                     viewModel.selectedPicture.value?.let {
                         val id = it.id.toInt() - 1
-                        viewModel.getPictureByButtonClick(id)
+                        viewModel.getPictureByButtonClick(id , false)
                     }
 
                 }
@@ -138,7 +138,7 @@ class PictureDetailActivity : AppCompatActivity() {
                 .subscribe {
                     viewModel.selectedPicture.value?.let {
                         val id = it.id.toInt() + 1
-                        viewModel.getPictureByButtonClick(id)
+                        viewModel.getPictureByButtonClick(id, true)
                     }
                 }
             val favoriteDisposable = favoriteButton.clicks() // 즐겨찾기

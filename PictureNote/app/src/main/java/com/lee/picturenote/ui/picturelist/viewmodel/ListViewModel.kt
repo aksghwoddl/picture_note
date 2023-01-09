@@ -1,5 +1,6 @@
 package com.lee.picturenote.ui.picturelist.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,7 @@ import retrofit2.Response
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
-
+private const val TAG = "ListViewModel"
 /**
  * 그림 목록 ViewModel class
  * **/
@@ -60,10 +61,13 @@ class ListViewModel @Inject constructor(
                 if(response.isSuccessful){
                     _pictures.value = response.body()
                 } else {
+                    Log.d(TAG, "getPictureList: response fail error code is ${response.code()}")
                     onError(resourceProvider.getString(R.string.response_fail))
+                    _isProgress.value = false
                 }
             } catch (exception : SocketTimeoutException){
                 onError(resourceProvider.getString(R.string.socket_time_out))
+                _isProgress.value = false
             }
         }
     }
