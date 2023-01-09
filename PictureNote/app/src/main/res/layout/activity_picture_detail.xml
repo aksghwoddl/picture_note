@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layout>
     <data>
         <variable
@@ -7,12 +8,23 @@
             name="detailActivity"
             type="com.lee.picturenote.ui.picturedetail.PictureDetailActivity" />
     </data>
-    <?xml version="1.0" encoding="utf-8"?>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         >
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:indeterminateTint="@color/black"
+            android:visibility="gone"
+            android:elevation="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <RelativeLayout
             android:id="@+id/headerLayout"
@@ -35,7 +47,7 @@
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/back_icon"
                 android:backgroundTint="@color/main_color"
-                android:onClick="@{() -> detailActivity::onBackButton}"
+                android:onClick="@{() -> detailActivity.onBackButton()}"
                 />
 
             <ImageButton
@@ -62,7 +74,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@id/contentsLayout"
             android:src="@drawable/no_image"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             />
 
         <LinearLayout
@@ -74,18 +86,27 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@id/buttonLayout"
-            android:gravity="center"
             >
+            <TextView
+                android:id="@+id/contentsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/detail"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:layout_marginBottom="30dp"
+                android:textStyle="bold"
+                android:background="@color/main_color"
+                />
             <TextView
                 android:id="@+id/authorTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/detail_author"
                 android:gravity="center"
-                android:textColor="@color/font_color"
-                android:textSize="25sp"
+                android:textSize="15sp"
                 android:layout_marginBottom="5dp"
-                android:textStyle="bold"
                 />
             <TextView
                 android:id="@+id/widthTextView"
@@ -129,7 +150,9 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                android:text="@string/previous" />
+                android:text="@string/previous"
+                android:textStyle="bold"
+                />
 
             <Button
                 android:id="@+id/nextButton"
@@ -145,6 +168,7 @@
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:text="@string/next"
                 android:layout_alignParentEnd="true"
+                android:textStyle="bold"
                 />
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

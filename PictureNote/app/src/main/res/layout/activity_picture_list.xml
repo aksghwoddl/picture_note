@@ -28,16 +28,20 @@
         android:background="@color/main_color"
         >
 
-        <ImageView
+        <TextView
             android:id="@+id/headerLogo"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/logo" />
+            android:text="@string/logo_name"
+            android:fontFamily="@font/swagger"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            />
 
         <ImageButton
             android:id="@+id/moveFavoriteButton"

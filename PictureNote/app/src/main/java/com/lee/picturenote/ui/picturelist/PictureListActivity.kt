@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import com.lee.picturenote.EXTRA_SELECTED_PICTURE
-import com.lee.picturenote.EXTRA_SELECTED_POSITION
+import com.lee.picturenote.common.EXTRA_SELECTED_PICTURE
+import com.lee.picturenote.common.EXTRA_SELECTED_POSITION
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener

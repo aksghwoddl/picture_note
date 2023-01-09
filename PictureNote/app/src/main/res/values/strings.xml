@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">픽쳐노트</string>
+    <string name="logo_name">picturenote</string>
     <string name="author">작가</string>
     <string name="size">크기</string>
     <string name="favorite">즐겨찾기</string>
@@ -8,6 +9,7 @@
     <string name="socket_time_out">서버와의 통신시간 제한이 지났습니다.\n다시 시도해주세요.</string>
 
     <!-- Picture Detail -->
+    <string name="detail">상세정보</string>
     <string name="detail_author">작가 : %s</string>
     <string name="detail_width">넓이 : %s</string>
     <string name="detail_height">높이 : %s</string>

@@ -15,4 +15,8 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getPictureList(page : Int): Response<MutableList<Picture>> {
         return pictureApi.getPictureList(page)
     }
+
+    override suspend fun getPictureById(id: String): Response<Picture> {
+        return pictureApi.getPictureById(id)
+    }
 }

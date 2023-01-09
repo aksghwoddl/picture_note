@@ -8,4 +8,5 @@ import retrofit2.Response
  * **/
 interface MainRepository {
     suspend fun getPictureList(page : Int) : Response<MutableList<Picture>>
+    suspend fun getPictureById(id : String) : Response<Picture>
 }
