@@ -8,5 +8,5 @@ import com.lee.picturenote.data.remote.model.Picture
 data class FavoritePicture(
     val id : String ,
     val picture: Picture ,
-    val index : Int
+    var index : Int
 )

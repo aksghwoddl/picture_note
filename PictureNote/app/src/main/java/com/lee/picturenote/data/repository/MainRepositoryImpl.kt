@@ -29,7 +29,6 @@ class MainRepositoryImpl @Inject constructor(
     /**
      * Local Repository
      * **/
-
     override suspend fun addFavoritePicture(pictureEntity: PictureEntity) = pictureDAO.addFavoritePicture(pictureEntity)
 
     override suspend fun getFavoritePicture() = pictureDAO.getFavoritePicture()
@@ -41,4 +40,6 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun getIndexById(id: String) = pictureDAO.getIndexById(id)
 
     override suspend fun getFavoritePictureById(id: String) = pictureDAO.getFavoritePictureById(id)
+
+    override suspend fun updateFavoritePicture(pictureEntity: PictureEntity) = pictureDAO.updatePicture(pictureEntity)
 }

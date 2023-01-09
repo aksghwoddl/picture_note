@@ -14,7 +14,9 @@ import com.lee.picturenote.ui.viewholder.PictureViewHolder
 /**
  * 즐갸찾기 목록을 관리하는 RecyclerAdapter class
  * **/
-class FavoriteRecyclerAdapter : RecyclerView.Adapter<FavoriteRecyclerAdapter.FavoriteViewHolder>() {
+class FavoriteRecyclerAdapter :
+    RecyclerView.Adapter<FavoriteRecyclerAdapter.FavoriteViewHolder>()
+    , ItemTouchHelperCallBack.ItemTouchHelperListener{
     private var favoritePictureList = mutableListOf<FavoritePicture>()
     private lateinit var itemClickListener : OnItemClickListener
 
@@ -67,4 +69,14 @@ class FavoriteRecyclerAdapter : RecyclerView.Adapter<FavoriteRecyclerAdapter.Fav
             }
         }
     }
+
+    override fun onItemMove(from: Int, to: Int): Boolean {
+        val item = favoritePictureList[from]
+        favoritePictureList.removeAt(from)
+        favoritePictureList.add(to , item)
+        notifyItemMoved(from , to)
+        return true
+    }
+
+    override fun onItemSwipe(position: Int) {}
 }

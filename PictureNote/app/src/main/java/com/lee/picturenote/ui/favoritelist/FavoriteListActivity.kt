@@ -1,5 +1,6 @@
 package com.lee.picturenote.ui.favoritelist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,15 +9,21 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.lee.picturenote.R
+import com.lee.picturenote.common.EXTRA_UPDATE_ID
+import com.lee.picturenote.common.INTENT_RELEASE_FAVORITE
 import com.lee.picturenote.common.adapter.CustomGridLayoutManager
 import com.lee.picturenote.data.local.entity.FavoritePicture
 import com.lee.picturenote.databinding.ActivityFavoriteListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.favoritelist.adapter.FavoriteRecyclerAdapter
+import com.lee.picturenote.ui.favoritelist.adapter.ItemTouchHelperCallBack
 import com.lee.picturenote.ui.favoritelist.viewmodel.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * 즐겨찾기 Activity class
@@ -47,6 +54,14 @@ class FavoriteListActivity : AppCompatActivity() {
             adapter = favoriteRecyclerAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
+        val itemTouchHelperCallBack = ItemTouchHelperCallBack(favoriteRecyclerAdapter)
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallBack)
+        itemTouchHelper.attachToRecyclerView(binding.favoriteRecyclerView)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.updateFavoriteMovie() // 화면이 내려가면 update를 시작한다.
     }
 
     private fun observeData() {
@@ -85,11 +100,15 @@ class FavoriteListActivity : AppCompatActivity() {
         override fun onClick(view: View, model: Any, position: Int) {
             if(model is FavoritePicture){
                 val alertBuilder = AlertDialog.Builder(this@FavoriteListActivity)
-                alertBuilder
-                    .setTitle(getString(R.string.favorite))
+                alertBuilder.setTitle(getString(R.string.favorite))
                     .setMessage(R.string.delete_dialog_message)
                     .setNegativeButton(R.string.cancel) {dialog , _  -> dialog.dismiss()}
                     .setPositiveButton(R.string.confirm) { dialog , _ ->
+                        viewModel.deleteFavoritePicture(model)
+                        with(Intent(INTENT_RELEASE_FAVORITE)){
+                            putExtra(EXTRA_UPDATE_ID , model.id)
+                            sendBroadcast(this)
+                        }
                         dialog.dismiss()
                     }.create().show()
             }

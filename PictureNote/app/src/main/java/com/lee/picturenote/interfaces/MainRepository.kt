@@ -48,4 +48,9 @@ interface MainRepository {
      * Room으로부터 전달된 ID에 따른 즐겨찾기 가져오기
      * **/
     suspend fun getFavoritePictureById(id : String) : FavoritePicture?
+
+    /**
+     * Room에 저장된 즐겨찾기 정보 업데이트 하기 (Index 변경을 위해)
+     * **/
+    suspend fun updateFavoritePicture(pictureEntity: PictureEntity)
 }
