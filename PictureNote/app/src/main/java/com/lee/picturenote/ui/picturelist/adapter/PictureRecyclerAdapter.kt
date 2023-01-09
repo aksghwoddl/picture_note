@@ -1,16 +1,20 @@
 package com.lee.picturenote.ui.picturelist.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.DiffResult
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lee.picturenote.R
+import com.lee.picturenote.common.ResourceProvider
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.PictureItemBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.viewholder.PictureViewHolder
+import javax.inject.Inject
 
 class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.PictureListViewHolder>() {
     private val pictures = ArrayList<Picture>()
@@ -49,15 +53,22 @@ class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.Pictu
             if(data is Picture){
                 with(binding){
                     val url = data.downloadUrl
-                    Glide.with(binding.root)
+                    Glide.with(binding.root) // ImageView
                         .load(url)
                         .error(R.drawable.no_image)
                         .into(pictureImageView)
 
-                    authorTextView.text = data.author
+                    authorTextView.text = data.author // 작가명
 
                     val size = "${data.width} x ${data.height}"
-                    sizeTextView.text = size
+                    sizeTextView.text = size // 사진 크기
+
+                    val favoriteDrawable : Drawable? = if(data.isFavorite){ // 사진 즐겨찾기 아이콘
+                        ResourcesCompat.getDrawable(binding.root.context.resources , R.drawable.setting_favorite_icon , null )
+                    } else {
+                        ResourcesCompat.getDrawable(binding.root.context.resources , R.drawable.favorite_icon , null )
+                    }
+                    favoriteIcon.setImageDrawable(favoriteDrawable)
                 }
                 val position = adapterPosition
                 if(position != RecyclerView.NO_POSITION){

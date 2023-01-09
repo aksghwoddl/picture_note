@@ -1,6 +1,9 @@
 package com.lee.picturenote.ui.picturelist
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import com.lee.picturenote.common.EXTRA_SELECTED_PICTURE
-import com.lee.picturenote.common.EXTRA_SELECTED_POSITION
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.lee.picturenote.common.*
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
@@ -37,6 +40,7 @@ class PictureListActivity : AppCompatActivity() {
 
     private lateinit var pictureRecyclerAdapter: PictureRecyclerAdapter
     private lateinit var recyclerPictures : ArrayList<Picture>
+    private lateinit var updateReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +48,21 @@ class PictureListActivity : AppCompatActivity() {
             setContentView(it.root)
         }
         observeData()
+        initBroadcastReceiver()
         initRecyclerView()
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(updateReceiver)
+        super.onDestroy()
+    }
+
+    private fun initBroadcastReceiver() {
+        updateReceiver = UpdateReceiver()
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(INTENT_SETTING_FAVORITE)
+        intentFilter.addAction(INTENT_RELEASE_FAVORITE)
+        registerReceiver(updateReceiver , intentFilter)
     }
 
     private fun initRecyclerView() {
@@ -55,6 +73,7 @@ class PictureListActivity : AppCompatActivity() {
             layoutManager = CustomLinearLayoutManager(context)
             adapter = pictureRecyclerAdapter
             addOnScrollListener(ScrollListener())
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
     }
     
@@ -121,12 +140,47 @@ class PictureListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * RecyclerView의 ItemClick Listener
+     * **/
     private inner class ItemClickListener : OnItemClickListener {
         override fun onClick(view: View, model: Picture, position: Int) {
             with(Intent(this@PictureListActivity , PictureDetailActivity::class.java)){
                 putExtra(EXTRA_SELECTED_PICTURE , model)
                 putExtra(EXTRA_SELECTED_POSITION , position)
                 startActivity(this)
+            }
+        }
+    }
+
+    /**
+     * 즐겨찾기 상태를 갱신하기 위해 사용하는 BroadcastReceiver
+     * **/
+    private inner class UpdateReceiver : BroadcastReceiver() {
+        override fun onReceive(context : Context?, intnet : Intent?) {
+            when(intnet?.action){
+                INTENT_RELEASE_FAVORITE -> {
+                    Log.d(TAG, "onReceive: INTENT_RELEASE_FAVORITE")
+                    val updateId = intnet.extras?.getString(EXTRA_UPDATE_ID)
+                    updateFavorite(updateId!! , false)
+                }
+                INTENT_SETTING_FAVORITE -> {
+                    Log.d(TAG, "onReceive: INTENT_SETTING_FAVORITE")
+                    val updateId = intnet.extras?.getString(EXTRA_UPDATE_ID)
+                    updateFavorite(updateId!! , true)
+                }
+            }
+        }
+    }
+
+    /**
+     * Broadcast를 통해 전달된 그림의 즐겨찾기 여부를 update하는 함수
+     * **/
+    private fun updateFavorite(id : String , isFavorite : Boolean) {
+        recyclerPictures.forEachIndexed{ index , picture ->
+            if(picture.id == id){
+                picture.isFavorite = isFavorite
+                pictureRecyclerAdapter.notifyItemChanged(index)
             }
         }
     }

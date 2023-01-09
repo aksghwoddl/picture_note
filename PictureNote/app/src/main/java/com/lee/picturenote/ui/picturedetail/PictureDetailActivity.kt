@@ -1,19 +1,20 @@
 package com.lee.picturenote.ui.picturedetail
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding3.view.clicks
 import com.lee.picturenote.R
-import com.lee.picturenote.common.EXTRA_SELECTED_PICTURE
-import com.lee.picturenote.common.FIRST_ITEM_ID
-import com.lee.picturenote.common.LAST_ITEM_ID
+import com.lee.picturenote.common.*
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureDetailBinding
 import com.lee.picturenote.ui.picturedetail.viewmodel.DetailViewModel
@@ -46,6 +47,7 @@ class PictureDetailActivity : AppCompatActivity() {
         observeData()
         addClickListener()
         viewModel.setPicture(selectedPicture)
+        viewModel.checkFavorite()
     }
 
     override fun onDestroy() {
@@ -55,10 +57,10 @@ class PictureDetailActivity : AppCompatActivity() {
 
     private fun observeData() {
         with(viewModel){
-            selectedPicture.observe(this@PictureDetailActivity){
+            selectedPicture.observe(this@PictureDetailActivity){ // 선택된 그림
                 settingContents(it)
             }
-            toastMessage.observe(this@PictureDetailActivity){
+            toastMessage.observe(this@PictureDetailActivity){ // Toast Message
                 Toast.makeText(this@PictureDetailActivity , it , Toast.LENGTH_SHORT).show()
             }
             isProgress.observe(this@PictureDetailActivity){
@@ -68,10 +70,10 @@ class PictureDetailActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                 }
             }
-            previousButtonEnable.observe(this@PictureDetailActivity){
+            previousButtonEnable.observe(this@PictureDetailActivity){ // 이전 버튼 enable 여부
                 binding.previousButton.isEnabled = it
             }
-            nextButtonEnable.observe(this@PictureDetailActivity){
+            nextButtonEnable.observe(this@PictureDetailActivity){ // 다음 버튼 enable 여부
                 binding.nextButton.isEnabled = it
             }
         }
@@ -99,6 +101,19 @@ class PictureDetailActivity : AppCompatActivity() {
                     viewModel.setNextButtonEnable(true)
                 }
             }
+            if(picture.isFavorite){ // 즐겨찾기인 경우
+                favoriteButton.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.setting_favorite_icon
+                        , null))
+            } else { // 즐겨찾기가 아닌 경우
+                favoriteButton.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.favorite_icon
+                        , null))
+            }
         }
         viewModel.setProgress(false)
     }
@@ -109,7 +124,7 @@ class PictureDetailActivity : AppCompatActivity() {
     private fun addClickListener() {
         compositeDisposable = CompositeDisposable()
         with(binding){
-            val prevDisposable = previousButton.clicks()
+            val prevDisposable = previousButton.clicks() // 이전 버튼
                 .throttleFirst(CLICK_TIME_OUT , TimeUnit.MILLISECONDS)
                 .subscribe{
                     viewModel.selectedPicture.value?.let {
@@ -118,7 +133,7 @@ class PictureDetailActivity : AppCompatActivity() {
                     }
 
                 }
-            val nextDisposable = nextButton.clicks()
+            val nextDisposable = nextButton.clicks() // 다음 버튼
                 .throttleFirst(CLICK_TIME_OUT , TimeUnit.MILLISECONDS)
                 .subscribe {
                     viewModel.selectedPicture.value?.let {
@@ -126,11 +141,50 @@ class PictureDetailActivity : AppCompatActivity() {
                         viewModel.getPictureByButtonClick(id)
                     }
                 }
-            compositeDisposable.addAll(prevDisposable , nextDisposable)
+            val favoriteDisposable = favoriteButton.clicks() // 즐겨찾기
+                .throttleFirst(CLICK_TIME_OUT , TimeUnit.MILLISECONDS)
+                .subscribe{
+                    clickFavoriteButton()
+                }
+            compositeDisposable.addAll(prevDisposable , nextDisposable , favoriteDisposable)
         }
     }
 
     fun onBackButton() {
         finish()
+    }
+
+    /**
+     * 즐겨찾기 버튼 클릭 시 다이얼로그를 생성하는 함수 ( 다이얼로그 버튼 클릭에 따라 즐겨찾기 등록 / 해제 )
+     * **/
+    private fun clickFavoriteButton() {
+        val alertBuilder = AlertDialog.Builder(this@PictureDetailActivity)
+        alertBuilder.setTitle(getString(R.string.favorite))
+        viewModel.selectedPicture.value?.let {
+            if(it.isFavorite){
+                alertBuilder.setMessage(getString(R.string.delete_dialog_message))
+                    .setNegativeButton(getString(R.string.cancel)) { dialog , _ -> dialog.dismiss() }
+                    .setPositiveButton(getString(R.string.confirm)) { dialog , _ ->
+                        viewModel.deleteFavorite() // 즐겨찾기 해제
+                        with(Intent(INTENT_RELEASE_FAVORITE)){ // BroadcastReceiver에게 상태 변경 알려주기
+                            putExtra(EXTRA_UPDATE_ID , it.id)
+                            sendBroadcast(this)
+                        }
+                        dialog.dismiss()
+                    }
+            } else {
+                alertBuilder.setMessage(getString(R.string.add_dialog_message))
+                    .setNegativeButton(getString(R.string.cancel)) {dialog , _ -> dialog.dismiss() }
+                    .setPositiveButton(getString(R.string.confirm)) {dialog , _ ->
+                        viewModel.addFavorite() // 즐겨찾기 등록
+                        with(Intent(INTENT_SETTING_FAVORITE)){ // BroadcastReceiver에게 상태 변경 알려주기
+                            putExtra(EXTRA_UPDATE_ID , it.id)
+                            sendBroadcast(this)
+                        }
+                        dialog.dismiss()
+                    }
+            }
+            alertBuilder.create().show()
+        }
     }
 }

@@ -83,4 +83,9 @@ dependencies {
 
     // RxBinding
     implementation "com.jakewharton.rxbinding3:rxbinding:3.1.0"
+
+    //Room
+    implementation 'androidx.room:room-runtime:2.4.3'
+    implementation "androidx.room:room-ktx:2.4.3"
+    kapt 'androidx.room:room-compiler:2.4.3'
 }

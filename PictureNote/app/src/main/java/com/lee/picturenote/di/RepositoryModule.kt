@@ -1,6 +1,7 @@
 package com.lee.picturenote.di
 
-import com.lee.picturenote.data.MainRepositoryImpl
+import com.lee.picturenote.data.local.dao.PictureDAO
+import com.lee.picturenote.data.repository.MainRepositoryImpl
 import com.lee.picturenote.data.remote.PictureApi
 import com.lee.picturenote.interfaces.MainRepository
 import dagger.Module
@@ -17,7 +18,7 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun provideRepository(api : PictureApi) : MainRepository {
-        return MainRepositoryImpl(api)
+    fun provideRepository(api : PictureApi , pictureDAO: PictureDAO) : MainRepository {
+        return MainRepositoryImpl(api , pictureDAO)
     }
 }

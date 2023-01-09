@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lee.picturenote.R
-import com.lee.picturenote.common.PictureNoteApplication
+import com.lee.picturenote.common.ResourceProvider
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.interfaces.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
@@ -19,7 +22,8 @@ import javax.inject.Inject
  * **/
 @HiltViewModel
 class ListViewModel @Inject constructor(
-    private val repository: MainRepository
+    private val repository: MainRepository ,
+    private val resourceProvider: ResourceProvider
 ) : ViewModel() {
 
     private val _pictures = MutableLiveData<MutableList<Picture>>()
@@ -50,17 +54,32 @@ class ListViewModel @Inject constructor(
             }
             try{
                 val response = withContext(Dispatchers.IO){
-                    repository.getPictureList(currentPage)
+                    val bResponse = repository.getPictureList(currentPage)
+                    checkFavorite(bResponse)
                 }
                 if(response.isSuccessful){
                     _pictures.value = response.body()
                 } else {
-                    onError(PictureNoteApplication.getInstance().getString(R.string.response_fail))
+                    onError(resourceProvider.getString(R.string.response_fail))
                 }
             } catch (exception : SocketTimeoutException){
-                onError(PictureNoteApplication.getInstance().getString(R.string.socket_time_out))
+                onError(resourceProvider.getString(R.string.socket_time_out))
             }
         }
+    }
+
+    private suspend fun checkFavorite(response : Response<MutableList<Picture>>) : Response<MutableList<Picture>>{
+        response.body()?.let { responsePictures ->
+            val favoritePictures = repository.getFavoritePicture()
+            favoritePictures.forEach { favoritePicture ->
+                responsePictures.forEach { responsePicture ->
+                    if(favoritePicture.id == responsePicture.id){
+                        responsePicture.isFavorite = true
+                    }
+                }
+            }
+        }
+        return response
     }
 
     /**

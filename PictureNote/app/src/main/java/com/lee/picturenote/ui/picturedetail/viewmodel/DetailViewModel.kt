@@ -1,11 +1,13 @@
 package com.lee.picturenote.ui.picturedetail.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lee.picturenote.R
-import com.lee.picturenote.common.PictureNoteApplication
+import com.lee.picturenote.common.ResourceProvider
+import com.lee.picturenote.data.local.entity.PictureEntity
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.interfaces.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,13 +17,17 @@ import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
+private const val TAG = "DetailViewModel"
+
 /**
  * 상세 페이지 ViewModel class
  * **/
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: MainRepository
+    private val repository: MainRepository ,
+    private val resourceProvider: ResourceProvider
 ) : ViewModel() {
+
     private val _selectedPicture = MutableLiveData<Picture>()
     val selectedPicture : LiveData<Picture>
     get() = _selectedPicture
@@ -65,15 +71,73 @@ class DetailViewModel @Inject constructor(
             _isProgress.value = true
             try{
                 val response = withContext(Dispatchers.IO){
-                    repository.getPictureById(id.toString())
+                    val bResponse = repository.getPictureById(id.toString())
+                    bResponse.body()?.let { picture ->
+                        repository.getFavoritePictureById(picture.id)?.let {
+                            picture.isFavorite = true
+                        }
+                    }
+                    bResponse
                 }
                 if(response.isSuccessful){
                     _selectedPicture.value = response.body()
                 } else {
-                    onError(PictureNoteApplication.getInstance().getString(R.string.response_fail))
+                    onError(resourceProvider.getString(R.string.response_fail))
                 }
             } catch (exception : SocketTimeoutException){
-                onError(PictureNoteApplication.getInstance().getString(R.string.socket_time_out))
+                onError(resourceProvider.getString(R.string.socket_time_out))
+            }
+        }
+    }
+
+    /**
+     * 즐겨찾기 추가하는 함수
+     * **/
+    fun addFavorite() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                val index = repository.getFavoritePictureCount()
+                with(selectedPicture.value!!){
+                    this.isFavorite = true
+                    val pictureEntity = PictureEntity(id , this , index)
+                    repository.addFavoritePicture(pictureEntity)
+                    _selectedPicture.postValue(this)
+                }
+            }
+            _toastMessage.value = resourceProvider.getString(R.string.add_favorite)
+        }
+    }
+
+    /**
+     *  즐겨찾기 해제하는 함수
+     * **/
+    fun deleteFavorite() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                with(selectedPicture.value!!){
+                    val index = repository.getIndexById(id)
+                    this.isFavorite = false
+                    val pictureEntity = PictureEntity(id , this , index)
+                    repository.deleteFavoritePicture(pictureEntity)
+                    _selectedPicture.postValue(this)
+                }
+            }
+            _toastMessage.value = resourceProvider.getString(R.string.delete_favorite)
+        }
+    }
+
+    /**
+     * 현재 선택된 그림이 즐겨찾기된 그림인지 확인하는 함수
+     * **/
+    fun checkFavorite() {
+        viewModelScope.launch {
+            val favoritePicture = withContext(Dispatchers.IO){
+                repository.getFavoritePictureById(selectedPicture.value!!.id)
+            }
+            favoritePicture?.let {
+                _selectedPicture.value = it.picture
+            }?:let {
+                Log.d(TAG, "checkFavorite: ${_selectedPicture.value!!.id} is not favorite picture!!")
             }
         }
     }
