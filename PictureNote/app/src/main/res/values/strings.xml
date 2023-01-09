@@ -23,4 +23,7 @@
     <string name="delete_dialog_message">즐겨찾기를 해제 하시겠습니까?</string>
     <string name="add_dialog_message">즐겨찾기를 등록 하시겠습니까?</string>
 
+    <!-- Favorite List -->
+    <string name="empty_favorite">아직 즐겨찾기가 등록되지 않았네요.</string>
+
 </resources>

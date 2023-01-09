@@ -1,9 +1,12 @@
-package com.lee.picturenote.ui.picturelist.adapter
+package com.lee.picturenote.common.adapter
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 
+/**
+ * InConsistent Exception 발생으로 인한 Custom LinearLayoutManager
+ * **/
 class CustomLinearLayoutManager : LinearLayoutManager {
     constructor(context: Context) : super(context) {}
 

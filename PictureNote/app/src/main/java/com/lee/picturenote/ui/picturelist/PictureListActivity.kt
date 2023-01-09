@@ -10,16 +10,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.lee.picturenote.R
 import com.lee.picturenote.common.*
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.picturedetail.PictureDetailActivity
-import com.lee.picturenote.ui.picturelist.adapter.CustomLinearLayoutManager
+import com.lee.picturenote.common.adapter.CustomLinearLayoutManager
+import com.lee.picturenote.ui.favoritelist.FavoriteListActivity
 import com.lee.picturenote.ui.picturelist.adapter.PictureRecyclerAdapter
 import com.lee.picturenote.ui.picturelist.viewmodel.ListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,9 +47,9 @@ class PictureListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPictureListBinding.inflate(layoutInflater).also {
-            setContentView(it.root)
-        }
+        binding = DataBindingUtil.setContentView(this , R.layout.activity_picture_list)
+        binding.listActivity = this@PictureListActivity
+
         observeData()
         initBroadcastReceiver()
         initRecyclerView()
@@ -144,11 +147,13 @@ class PictureListActivity : AppCompatActivity() {
      * RecyclerView의 ItemClick Listener
      * **/
     private inner class ItemClickListener : OnItemClickListener {
-        override fun onClick(view: View, model: Picture, position: Int) {
-            with(Intent(this@PictureListActivity , PictureDetailActivity::class.java)){
-                putExtra(EXTRA_SELECTED_PICTURE , model)
-                putExtra(EXTRA_SELECTED_POSITION , position)
-                startActivity(this)
+        override fun onClick(view: View, model: Any, position: Int) {
+            if(model is Picture){
+                with(Intent(this@PictureListActivity , PictureDetailActivity::class.java)){
+                    putExtra(EXTRA_SELECTED_PICTURE , model)
+                    putExtra(EXTRA_SELECTED_POSITION , position)
+                    startActivity(this)
+                }
             }
         }
     }
@@ -182,6 +187,12 @@ class PictureListActivity : AppCompatActivity() {
                 picture.isFavorite = isFavorite
                 pictureRecyclerAdapter.notifyItemChanged(index)
             }
+        }
+    }
+
+    fun startFavoriteActivity() {
+        with(Intent(this@PictureListActivity , FavoriteListActivity::class.java)){
+            startActivity(this)
         }
     }
 }
