@@ -13,4 +13,13 @@
         <item name="android:statusBarColor">@color/main_color</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="AppTheme.Starting" parent="Theme.SplashScreen" tools:targetApi="s">
+        <item name="windowSplashScreenBackground" >@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.PictureNote</item>
+        <item name="android:windowLightStatusBar" >true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
 </resources>

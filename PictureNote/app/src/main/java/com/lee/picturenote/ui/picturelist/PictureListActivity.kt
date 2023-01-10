@@ -17,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.lee.picturenote.R
 import com.lee.picturenote.common.*
+import com.lee.picturenote.common.adapter.CustomLinearLayoutManager
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
-import com.lee.picturenote.ui.picturedetail.PictureDetailActivity
-import com.lee.picturenote.common.adapter.CustomLinearLayoutManager
 import com.lee.picturenote.ui.favoritelist.FavoriteListActivity
+import com.lee.picturenote.ui.picturedetail.PictureDetailActivity
 import com.lee.picturenote.ui.picturelist.adapter.PictureRecyclerAdapter
 import com.lee.picturenote.ui.picturelist.viewmodel.ListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +49,6 @@ class PictureListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this , R.layout.activity_picture_list)
         binding.listActivity = this@PictureListActivity
-
         observeData()
         initBroadcastReceiver()
         initRecyclerView()
@@ -190,6 +189,9 @@ class PictureListActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 즐겨찾기 페이지 실행 하는 함수
+     * **/
     fun startFavoriteActivity() {
         with(Intent(this@PictureListActivity , FavoriteListActivity::class.java)){
             startActivity(this)
