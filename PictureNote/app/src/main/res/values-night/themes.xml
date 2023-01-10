@@ -15,8 +15,8 @@
     </style>
 
     <!-- Splash Screen Theme -->
-    <style name="AppTheme.Starting" parent="Theme.SplashScreen" tools:targetApi="s">
-        <item name="windowSplashScreenBackground" tools:targetApi="s">@color/white</item>
+    <style name="AppTheme.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo_icon</item>
         <item name="postSplashScreenTheme">@style/Theme.PictureNote</item>
         <item name="android:windowLightStatusBar" >false</item>

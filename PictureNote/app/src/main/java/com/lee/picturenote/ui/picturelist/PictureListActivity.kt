@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,7 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "PictureListActivity"
 private const val RECYCLER_VIEW_BOTTOM = 1
+private const val RECYCLER_VIEW_TOP = -1
 
 /**
  * 그림 목록 Activity class
@@ -52,6 +54,8 @@ class PictureListActivity : AppCompatActivity() {
         observeData()
         initBroadcastReceiver()
         initRecyclerView()
+        initTopButton()
+
     }
 
     override fun onDestroy() {
@@ -76,6 +80,12 @@ class PictureListActivity : AppCompatActivity() {
             adapter = pictureRecyclerAdapter
             addOnScrollListener(ScrollListener())
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
+    }
+
+    private fun initTopButton() {
+        binding.topFabButton.setOnClickListener{
+            binding.imageRecyclerView.smoothScrollToPosition(0)
         }
     }
     
@@ -126,6 +136,12 @@ class PictureListActivity : AppCompatActivity() {
     private inner class ScrollListener : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
+            if(!recyclerView.canScrollVertically(RECYCLER_VIEW_TOP)){ // 최상단 도달시에는 button 숨김
+                binding.topFabButton.visibility = View.GONE
+            } else {
+                binding.topFabButton.visibility = View.VISIBLE
+            }
+
             if(!recyclerView.canScrollVertically(RECYCLER_VIEW_BOTTOM)){
                 with(viewModel){
                     isProgress.value?.let {

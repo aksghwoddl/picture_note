@@ -12,6 +12,7 @@
     <!-- Picture List -->
     <string name="response_fail">정보를 가져오지 못했습니다.</string>
     <string name="socket_time_out">서버와의 통신시간 제한이 지났습니다.\n다시 시도해주세요.</string>
+    <string name="go_to_top">위로</string>
 
     <!-- Picture Detail -->
     <string name="detail">상세정보</string>
