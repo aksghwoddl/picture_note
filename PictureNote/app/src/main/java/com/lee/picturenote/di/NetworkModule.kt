@@ -1,5 +1,6 @@
 package com.lee.picturenote.di
 
+import com.lee.picturenote.BuildConfig
 import com.lee.picturenote.common.PICTURE_LIST_URL
 import com.lee.picturenote.data.remote.PictureApi
 import dagger.Module
@@ -22,11 +23,15 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient() : OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-       return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
+        return if(BuildConfig.DEBUG){ // BuildConfig가 Debug일때는 Interceptor를 추가한다.
+            val loggingInterceptor = HttpLoggingInterceptor()
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+        } else { // BuildConfig가 Release일때는 Interceptor없이 OkHttp를 생성한다.
+            OkHttpClient.Builder().build()
+        }
     }
 
     @Provides
