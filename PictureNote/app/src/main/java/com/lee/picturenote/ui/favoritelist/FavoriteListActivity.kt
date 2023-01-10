@@ -2,14 +2,12 @@ package com.lee.picturenote.ui.favoritelist
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.lee.picturenote.R
@@ -23,7 +21,6 @@ import com.lee.picturenote.ui.favoritelist.adapter.FavoriteRecyclerAdapter
 import com.lee.picturenote.ui.favoritelist.adapter.ItemTouchHelperCallBack
 import com.lee.picturenote.ui.favoritelist.viewmodel.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 /**
  * 즐겨찾기 Activity class
@@ -43,7 +40,7 @@ class FavoriteListActivity : AppCompatActivity() {
 
         initRecyclerView()
         observeData()
-        viewModel.getFavoritePictures()
+        viewModel.getFavoritePictures() // 즐겨찾기한 목록 불러오기
     }
 
     private fun initRecyclerView() {
@@ -52,7 +49,7 @@ class FavoriteListActivity : AppCompatActivity() {
         binding.favoriteRecyclerView.run {
             layoutManager = CustomGridLayoutManager(this@FavoriteListActivity , 2)
             adapter = favoriteRecyclerAdapter
-            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false // RecyclerView 깜빡임 현상 없애기
         }
         val itemTouchHelperCallBack = ItemTouchHelperCallBack(favoriteRecyclerAdapter)
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallBack)
@@ -87,10 +84,6 @@ class FavoriteListActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    fun onBackButton() {
-        finish()
     }
 
     /**

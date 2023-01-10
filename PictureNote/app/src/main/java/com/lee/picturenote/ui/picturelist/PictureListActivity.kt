@@ -10,14 +10,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.lee.picturenote.R
-import com.lee.picturenote.common.*
+import com.lee.picturenote.common.EXTRA_SELECTED_PICTURE
+import com.lee.picturenote.common.EXTRA_UPDATE_ID
+import com.lee.picturenote.common.INTENT_RELEASE_FAVORITE
+import com.lee.picturenote.common.INTENT_SETTING_FAVORITE
 import com.lee.picturenote.common.adapter.CustomLinearLayoutManager
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureListBinding
@@ -79,20 +81,21 @@ class PictureListActivity : AppCompatActivity() {
             layoutManager = CustomLinearLayoutManager(context)
             adapter = pictureRecyclerAdapter
             addOnScrollListener(ScrollListener())
-            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false // RecyclerView 깜빡임 현상 없애기
         }
     }
 
     private fun initTopButton() {
-        binding.topFabButton.setOnClickListener{
-            binding.imageRecyclerView.smoothScrollToPosition(0)
+        binding.topFabButton.setOnClickListener{ // RecyclerView를 최상단으로 올리기
+            // 많은 사진을 로드 했을때 smoothScrollToPosition 사용시에 최상단 까지 올라가는게 너무 오래걸림
+            // 그렇기에 scrollToPosition으로 메소드 replace
+            binding.imageRecyclerView.scrollToPosition(0)
         }
     }
     
     private fun observeData() {
         with(viewModel) {
             pictures.observe(this@PictureListActivity){ // 사진 목록
-                Log.d(TAG, "observeData: $it")
                 updateList(it)
             }
             
@@ -166,7 +169,6 @@ class PictureListActivity : AppCompatActivity() {
             if(model is Picture){
                 with(Intent(this@PictureListActivity , PictureDetailActivity::class.java)){
                     putExtra(EXTRA_SELECTED_PICTURE , model)
-                    putExtra(EXTRA_SELECTED_POSITION , position)
                     startActivity(this)
                 }
             }

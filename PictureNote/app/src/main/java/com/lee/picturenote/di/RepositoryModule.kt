@@ -1,8 +1,8 @@
 package com.lee.picturenote.di
 
 import com.lee.picturenote.data.local.dao.PictureDAO
-import com.lee.picturenote.data.repository.MainRepositoryImpl
 import com.lee.picturenote.data.remote.PictureApi
+import com.lee.picturenote.data.repository.MainRepositoryImpl
 import com.lee.picturenote.interfaces.MainRepository
 import dagger.Module
 import dagger.Provides

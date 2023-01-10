@@ -9,12 +9,10 @@ import androidx.recyclerview.widget.DiffUtil.DiffResult
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lee.picturenote.R
-import com.lee.picturenote.common.ResourceProvider
 import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.PictureItemBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.viewholder.PictureViewHolder
-import javax.inject.Inject
 
 class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.PictureListViewHolder>() {
     private val pictures = ArrayList<Picture>()

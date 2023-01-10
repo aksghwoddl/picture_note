@@ -36,12 +36,12 @@ class SplashActivity : AppCompatActivity() {
      * 앱 시작 후 이미지 로딩 전에 네트워크 상태를 체크하는 함수
      * **/
     private fun checkNetworkState() {
-        if(Utils.checkNetworkConnection(this)){
+        if(Utils.checkNetworkConnection(this)){ // 네트워크가 연결되어 있을 경우
             with(Intent(this@SplashActivity , PictureListActivity::class.java)){
                 startActivity(this)
                 finish()
             }
-        } else {
+        } else { // 네트워크가 연결 되어 있지 않은 경우
             AlertDialog.Builder(this)
                 .setTitle(getString(R.string.network))
                 .setMessage(getString(R.string.check_network))

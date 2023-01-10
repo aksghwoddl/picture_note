@@ -47,7 +47,7 @@
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/back_icon"
                 android:backgroundTint="@color/main_color"
-                android:onClick="@{() -> detailActivity.onBackButton()}"
+                android:onClick="@{() -> detailActivity.finish()}"
                 />
 
             <ImageButton

@@ -49,17 +49,30 @@ class DetailViewModel @Inject constructor(
     val isProgress : LiveData<Boolean>
     get() = _isProgress
 
+    /**
+     * 현재 보여주는 그림을 setting하는 함수
+     * **/
     fun setPicture(picture: Picture){
         _selectedPicture.value = picture
     }
 
+    /**
+     * 진행상태를 setting하는 함수
+     * **/
     fun setProgress(progress : Boolean){
         _isProgress.value = progress
     }
 
+    /**
+     * 이전 버튼 활성화 여부 설정하는 함수
+     * **/
     fun setPreviousButtonEnable(enable : Boolean){
         _previousButtonEnable.value = enable
     }
+
+    /**
+     * 다음 버튼 활성화 여부 설정하는 함수
+     * **/
     fun setNextButtonEnable(enable : Boolean){
         _nextButtonEnable.value = enable
     }
@@ -145,15 +158,15 @@ class DetailViewModel @Inject constructor(
             val favoritePicture = withContext(Dispatchers.IO){
                 repository.getFavoritePictureById(selectedPicture.value!!.id)
             }
-            favoritePicture?.let {
+            favoritePicture?.let { // 현재 ID로 저장된 즐겨찾기가 있을 경우
                 _selectedPicture.value = it.picture
-            }?:let {
+            }?:let { // 현재 ID로 저장된 즐겨찾기가 없는 경우 Log찍도록 함
                 Log.d(TAG, "checkFavorite: ${_selectedPicture.value!!.id} is not favorite picture!!")
             }
         }
     }
 
-    private fun onError(message : String){
+    fun onError(message : String){
         _toastMessage.postValue(message)
     }
 }

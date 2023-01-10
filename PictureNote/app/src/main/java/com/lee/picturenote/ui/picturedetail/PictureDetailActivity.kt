@@ -39,20 +39,27 @@ class PictureDetailActivity : AppCompatActivity() {
         binding.detailViewModel = viewModel
         binding.detailActivity = this@PictureDetailActivity
 
-        val selectedPicture : Picture = if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){ // API Level 33 미만
-            intent.extras?.getSerializable(EXTRA_SELECTED_PICTURE) as Picture
-        } else { // API Level 33 이상
-            intent.extras?.getSerializable(EXTRA_SELECTED_PICTURE , Picture::class.java) as Picture
-        }
         observeData()
         addClickListener()
-        viewModel.setPicture(selectedPicture)
-        viewModel.checkFavorite()
+        getIntentExtras()
+        viewModel.checkFavorite() // 현재 보여주는 그림이 즐겨찾기가 된것인지 확인
     }
 
     override fun onDestroy() {
         compositeDisposable.clear() // RxBinding 사용 후 생성된 Disposable객체 clear
         super.onDestroy()
+    }
+
+    /**
+     * intent로부터 전달받은 extra를 가져오는 함수
+     * **/
+    private fun getIntentExtras() {
+        val selectedPicture : Picture = if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){ // API Level 33 미만
+            intent.extras?.getSerializable(EXTRA_SELECTED_PICTURE) as Picture
+        } else { // API Level 33 이상
+            intent.extras?.getSerializable(EXTRA_SELECTED_PICTURE , Picture::class.java) as Picture
+        }
+        viewModel.setPicture(selectedPicture)
     }
 
     private fun observeData() {
@@ -119,7 +126,7 @@ class PictureDetailActivity : AppCompatActivity() {
     }
 
     /**
-     * Next , Previous button 클릭 리스너 등록하는 함수
+     * Next , Previous , 즐겨찾기 클릭 리스너 등록하는 함수
      * **/
     private fun addClickListener() {
         compositeDisposable = CompositeDisposable()
@@ -127,20 +134,29 @@ class PictureDetailActivity : AppCompatActivity() {
             val prevDisposable = previousButton.clicks() // 이전 버튼
                 .throttleFirst(CLICK_TIME_OUT , TimeUnit.MILLISECONDS)
                 .subscribe{
-                    viewModel.selectedPicture.value?.let {
-                        val id = it.id.toInt() - 1
-                        viewModel.getPictureByButtonClick(id , false)
+                    if(Utils.checkNetworkConnection(this@PictureDetailActivity)){ // 인터넷이 연결 되어있는 경우
+                        viewModel.selectedPicture.value?.let {
+                            val id = it.id.toInt() - 1
+                            viewModel.getPictureByButtonClick(id , false)
+                        }
+                    } else { // 인터넷이 연결 되어있지 않은 경우
+                        viewModel.onError(getString(R.string.detail_check_network))
                     }
-
                 }
+
             val nextDisposable = nextButton.clicks() // 다음 버튼
                 .throttleFirst(CLICK_TIME_OUT , TimeUnit.MILLISECONDS)
                 .subscribe {
-                    viewModel.selectedPicture.value?.let {
-                        val id = it.id.toInt() + 1
-                        viewModel.getPictureByButtonClick(id, true)
+                    if(Utils.checkNetworkConnection(this@PictureDetailActivity)){ // 인터넷이 연결 되어있는 경우
+                        viewModel.selectedPicture.value?.let {
+                            val id = it.id.toInt() + 1
+                            viewModel.getPictureByButtonClick(id, true)
+                        }
+                    } else { // 인터넷이 연결 되어있지 않은 경우
+                        viewModel.onError(getString(R.string.detail_check_network))
                     }
                 }
+
             val favoriteDisposable = favoriteButton.clicks() // 즐겨찾기
                 .throttleFirst(CLICK_TIME_OUT , TimeUnit.MILLISECONDS)
                 .subscribe{
@@ -150,10 +166,6 @@ class PictureDetailActivity : AppCompatActivity() {
         }
     }
 
-    fun onBackButton() {
-        finish()
-    }
-
     /**
      * 즐겨찾기 버튼 클릭 시 다이얼로그를 생성하는 함수 ( 다이얼로그 버튼 클릭에 따라 즐겨찾기 등록 / 해제 )
      * **/
@@ -161,7 +173,7 @@ class PictureDetailActivity : AppCompatActivity() {
         val alertBuilder = AlertDialog.Builder(this@PictureDetailActivity)
         alertBuilder.setTitle(getString(R.string.favorite))
         viewModel.selectedPicture.value?.let {
-            if(it.isFavorite){
+            if(it.isFavorite){ // 이미 즐겨찾기가 설정된 경우
                 alertBuilder.setMessage(getString(R.string.delete_dialog_message))
                     .setNegativeButton(getString(R.string.cancel)) { dialog , _ -> dialog.dismiss() }
                     .setPositiveButton(getString(R.string.confirm)) { dialog , _ ->
@@ -172,7 +184,7 @@ class PictureDetailActivity : AppCompatActivity() {
                         }
                         dialog.dismiss()
                     }
-            } else {
+            } else { // 아직 즐겨찾기가 설정되지 않은 경우
                 alertBuilder.setMessage(getString(R.string.add_dialog_message))
                     .setNegativeButton(getString(R.string.cancel)) {dialog , _ -> dialog.dismiss() }
                     .setPositiveButton(getString(R.string.confirm)) {dialog , _ ->
