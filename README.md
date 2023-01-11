@@ -47,14 +47,14 @@
  
 ##### 3️⃣ 즐겨찾기 등록/해제 및 즐겨찾기 페이지
 ###### RoomDB를 통해 사용자가 좋아하는 그림을 즐겨찾기에 저장 할 수 있습니다 등록한 그림은 즐겨찾기 페이지에서 확인이 가능합니다. <br>
-###### RoomDB에 저장된 즐겨찾기한 이미지 목록을 보여주는 화면으로 Drag and Drop을 통해 이미지의 순서를 조정할 수 있고 즐겨찾기를 해제 할 수 있습니다.
+###### 즐겨찾기 페이지는 RoomDB에 저장된 이미지 목록을 보여주는 화면으로 Drag and Drop을 통해 이미지의 순서를 조정할 수 있고 즐겨찾기를 해제 할 수 있습니다.
 <p align="center">
  <img width="30%" src="https://user-images.githubusercontent.com/65700842/211616386-8a804b52-9ac8-4013-80bd-97f1700bcb4e.gif">
  <img width="30%" src="https://user-images.githubusercontent.com/65700842/211617547-e1461bc0-2560-4bea-90e3-cf150e366a6b.gif">
 </p>
 
 ##### 4️⃣ 스크롤 최상단 이동 버튼
-###### Floating Button을 통해 RecyclerView의 최삳단으로 이동할 수 있도록 구현 하였습니다.
+###### Floating Button을 통해 RecyclerView의 최상단으로 이동할 수 있도록 구현 하였습니다.
 <div align="center">
  <img width="30%" src="https://user-images.githubusercontent.com/65700842/211620002-8019e8cc-8612-4ab9-932c-64df17ee4fbb.gif">
 </div>
