@@ -137,7 +137,7 @@ class PictureDetailActivity : AppCompatActivity() {
                     if(Utils.checkNetworkConnection(this@PictureDetailActivity)){ // 인터넷이 연결 되어있는 경우
                         viewModel.selectedPicture.value?.let {
                             val id = it.id.toInt() - 1
-                            viewModel.getPictureByButtonClick(id , false)
+                            viewModel.getPictureByButtonClick(id , previousButton.text.toString())
                         }
                     } else { // 인터넷이 연결 되어있지 않은 경우
                         viewModel.onError(getString(R.string.detail_check_network))
@@ -150,7 +150,7 @@ class PictureDetailActivity : AppCompatActivity() {
                     if(Utils.checkNetworkConnection(this@PictureDetailActivity)){ // 인터넷이 연결 되어있는 경우
                         viewModel.selectedPicture.value?.let {
                             val id = it.id.toInt() + 1
-                            viewModel.getPictureByButtonClick(id, true)
+                            viewModel.getPictureByButtonClick(id, nextButton.text.toString())
                         }
                     } else { // 인터넷이 연결 되어있지 않은 경우
                         viewModel.onError(getString(R.string.detail_check_network))
