@@ -90,6 +90,7 @@ class PictureListActivity : AppCompatActivity() {
             // 많은 사진을 로드 했을때 smoothScrollToPosition 사용시에 최상단 까지 올라가는게 너무 오래걸림
             // 그렇기에 scrollToPosition으로 메소드 replace
             binding.imageRecyclerView.scrollToPosition(0)
+            it.visibility = View.GONE // 최상단 도달했을때 버튼 사라지게 하기
         }
     }
     
