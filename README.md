@@ -56,7 +56,7 @@
 ##### 4️⃣ 스크롤 최상단 이동 버튼
 ###### Floating Button을 통해 RecyclerView의 최상단으로 이동할 수 있도록 구현 하였습니다.
 <div align="center">
- <img width="30%" src="https://user-images.githubusercontent.com/65700842/211620002-8019e8cc-8612-4ab9-932c-64df17ee4fbb.gif">
+ <img width="30%" src="https://user-images.githubusercontent.com/65700842/212238434-80be93da-6d15-4e11-b36d-a0365b546cce.gif">
 </div>
 
 ### 😎 프로젝트 사용기술 설명
