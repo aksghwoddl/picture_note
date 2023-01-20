@@ -23,7 +23,7 @@
             android:elevation="32dp"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/headerLayout"
             android:layout_width="0dp"
             android:layout_height="@dimen/header_height"
@@ -38,7 +38,6 @@
                 android:id="@+id/headerLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -47,6 +46,9 @@
                 android:fontFamily="@font/swagger"
                 android:textColor="@color/white"
                 android:textSize="25sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
             <ImageButton
@@ -59,8 +61,26 @@
                 android:layout_marginEnd="10dp"
                 android:layout_alignParentEnd="true"
                 android:onClick="@{() -> listActivity.startFavoriteActivity()}"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
-        </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/moveSearchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/search_icon"
+                android:backgroundTint="@color/main_color"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="@{() -> listActivity.startSearchActivity()}"
+                app:layout_constraintRight_toLeftOf="@id/moveFavoriteButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imageRecyclerView"

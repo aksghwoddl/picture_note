@@ -28,6 +28,7 @@ import com.lee.picturenote.ui.favoritelist.FavoriteListActivity
 import com.lee.picturenote.ui.picturedetail.PictureDetailActivity
 import com.lee.picturenote.ui.picturelist.adapter.PictureRecyclerAdapter
 import com.lee.picturenote.ui.picturelist.viewmodel.ListViewModel
+import com.lee.picturenote.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -213,6 +214,15 @@ class PictureListActivity : AppCompatActivity() {
      * **/
     fun startFavoriteActivity() {
         with(Intent(this@PictureListActivity , FavoriteListActivity::class.java)){
+            startActivity(this)
+        }
+    }
+
+    /**
+     * 검색하기 페이지 실행 하는 함수
+     * **/
+    fun startSearchActivity() {
+        with(Intent(this@PictureListActivity , SearchActivity::class.java)){
             startActivity(this)
         }
     }
