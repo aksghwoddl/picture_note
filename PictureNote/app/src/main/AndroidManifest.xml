@@ -43,6 +43,11 @@
             android:theme="@style/Theme.PictureNote"
             >
         </activity>
+
+        <activity android:name=".ui.search.SearchActivity"
+            android:theme="@style/Theme.PictureNote"
+            >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
