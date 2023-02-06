@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.DiffUtil.DiffResult
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lee.picturenote.R
@@ -14,8 +14,7 @@ import com.lee.picturenote.databinding.PictureItemBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.viewholder.PictureViewHolder
 
-class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.PictureListViewHolder>() {
-    private val pictures = ArrayList<Picture>()
+class PictureRecyclerAdapter : ListAdapter< Picture , PictureRecyclerAdapter.PictureListViewHolder>(DiffUtilCallback()) {
     private lateinit var itemClickListener : OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureListViewHolder {
@@ -24,22 +23,7 @@ class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.Pictu
     }
 
     override fun onBindViewHolder(holder: PictureListViewHolder, position: Int) {
-        holder.bind(pictures[position])
-    }
-
-    override fun getItemCount() = pictures.size
-
-    /**
-     * DiffUtil을 활용하여 List update하는 함수
-     * **/
-    fun updateList(list : ArrayList<Picture>) : DiffResult{
-        val diffUtilCallback = DiffUtilCallback(pictures , list)
-        val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
-        pictures.run {
-            clear()
-            addAll(list)
-        }
-        return diffResult
+        holder.bind(getItem(position))
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener){
@@ -79,5 +63,15 @@ class PictureRecyclerAdapter : RecyclerView.Adapter<PictureRecyclerAdapter.Pictu
             }
         }
 
+    }
+
+    private class DiffUtilCallback : DiffUtil.ItemCallback<Picture>() {
+        override fun areItemsTheSame(oldItem: Picture, newItem: Picture): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Picture, newItem: Picture): Boolean {
+            return oldItem == newItem
+        }
     }
 }

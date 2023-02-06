@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -30,9 +29,6 @@ import com.lee.picturenote.ui.picturelist.adapter.PictureRecyclerAdapter
 import com.lee.picturenote.ui.picturelist.viewmodel.ListViewModel
 import com.lee.picturenote.ui.search.SearchActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "PictureListActivity"
 private const val RECYCLER_VIEW_BOTTOM = 1
@@ -47,7 +43,6 @@ class PictureListActivity : AppCompatActivity() {
     private val viewModel : ListViewModel by viewModels()
 
     private lateinit var pictureRecyclerAdapter: PictureRecyclerAdapter
-    private lateinit var recyclerPictures : ArrayList<Picture>
     private lateinit var updateReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +70,6 @@ class PictureListActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        recyclerPictures = arrayListOf()
         pictureRecyclerAdapter = PictureRecyclerAdapter()
         pictureRecyclerAdapter.setOnItemClickListener(ItemClickListener())
         binding.imageRecyclerView.run {
@@ -98,7 +92,12 @@ class PictureListActivity : AppCompatActivity() {
     private fun observeData() {
         with(viewModel) {
             pictures.observe(this@PictureListActivity){ // 사진 목록
-                updateList(it)
+                if(::pictureRecyclerAdapter.isInitialized){
+                    val newList = mutableListOf<Picture>()
+                    newList.addAll(it)
+                    pictureRecyclerAdapter.submitList(newList)
+                    setProgress(false)
+                }
             }
             
             page.observe(this@PictureListActivity){ // Page
@@ -115,22 +114,6 @@ class PictureListActivity : AppCompatActivity() {
                 } else {
                     binding.progressBar.visibility = View.GONE
                 }
-            }
-        }
-    }
-
-    /**
-     * LiveData 변경시 그림 목록을 update하는 함수
-     * **/
-    private fun updateList(list : MutableList<Picture>) {
-        if(::recyclerPictures.isInitialized){
-            recyclerPictures.addAll(list)
-            lifecycleScope.launch{
-                val result = withContext(Dispatchers.Default){
-                    pictureRecyclerAdapter.updateList(recyclerPictures)
-                }
-                result.dispatchUpdatesTo(pictureRecyclerAdapter)
-                viewModel.setProgress(false)
             }
         }
     }
@@ -201,7 +184,7 @@ class PictureListActivity : AppCompatActivity() {
      * Broadcast를 통해 전달된 그림의 즐겨찾기 여부를 update하는 함수
      * **/
     private fun updateFavorite(id : String , isFavorite : Boolean) {
-        recyclerPictures.forEachIndexed{ index , picture ->
+        pictureRecyclerAdapter.currentList.forEachIndexed{ index , picture ->
             if(picture.id == id){
                 picture.isFavorite = isFavorite
                 pictureRecyclerAdapter.notifyItemChanged(index)

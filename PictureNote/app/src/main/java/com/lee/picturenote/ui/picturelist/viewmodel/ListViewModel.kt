@@ -26,6 +26,7 @@ class ListViewModel @Inject constructor(
     private val repository: MainRepository ,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
+    private val searchingPictures = mutableListOf<Picture>()
 
     private val _pictures = MutableLiveData<MutableList<Picture>>()
     val pictures : LiveData<MutableList<Picture>>
@@ -55,7 +56,8 @@ class ListViewModel @Inject constructor(
                     checkFavorite(bResponse)
                 }
                 if(response.isSuccessful){
-                    _pictures.value = response.body()
+                    searchingPictures.addAll(response.body()!!)
+                    _pictures.value = searchingPictures
                 } else {
                     Log.d(TAG, "getPictureList: response fail error code is ${response.code()}")
                     onError(resourceProvider.getString(R.string.response_fail))
@@ -97,6 +99,10 @@ class ListViewModel @Inject constructor(
      * **/
     fun setProgress(isProgress : Boolean){
         _isProgress.value = isProgress
+    }
+
+    fun setPictures(list : MutableList<Picture>){
+        _pictures.value = list
     }
 
     /**
