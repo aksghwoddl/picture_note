@@ -1,6 +1,7 @@
 package com.lee.picturenote.di
 
 import com.lee.picturenote.BuildConfig
+import com.lee.picturenote.common.BASE_URL
 import com.lee.picturenote.common.PICTURE_LIST_URL
 import com.lee.picturenote.data.remote.PictureApi
 import dagger.Module
@@ -38,7 +39,7 @@ object NetworkModule {
     @Singleton
     fun providePictureApi(okHttpClient: OkHttpClient) : PictureApi {
         return Retrofit.Builder()
-            .baseUrl(PICTURE_LIST_URL)
+            .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

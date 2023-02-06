@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lee.picturenote.common.GET_RANDOM_PICTURE_URL
+import com.lee.picturenote.common.BASE_URL
 import com.lee.picturenote.interfaces.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,6 +12,7 @@ import javax.inject.Inject
 private const val PATH_URL = "%s/"
 private const val QUERY_GRAYSCALE = "?grayscale"
 private const val QUERY_BLUR = "?blur=%d"
+private const val QUERY_NO_BLUR_GAGE = "?blur"
 
 private const val TAG = "SearchViewModel"
 
@@ -56,7 +57,7 @@ class SearchViewModel @Inject constructor(
      * LiveData를 통해 로딩할 이미지를 검색하는 함수
      * **/
     fun getSearchingImage() : String{
-        var url = GET_RANDOM_PICTURE_URL
+        var url = BASE_URL
         inputWidth.value?.let {
             if(it.isNotEmpty()){
                 val path = String.format(PATH_URL , it)
@@ -76,7 +77,11 @@ class SearchViewModel @Inject constructor(
         }
         blur.value?.let {
             if(it){
-                url += String.format(QUERY_BLUR , blurGage.value)
+                url += if(blurGage.value == 0){
+                    QUERY_NO_BLUR_GAGE
+                } else {
+                    String.format(QUERY_BLUR , blurGage.value)
+                }
             }
         }
         Log.d(TAG, "getSearchingImage: url = $url")
