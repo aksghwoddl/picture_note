@@ -68,5 +68,5 @@
 ##### 6️⃣ Glide를 통해 이미지 작업을 진행 하였습니다.
 ##### 7️⃣ Repository를 사용하여 Data를 관리 하였습니다.
 ##### 8️⃣ ItemTouchHelper를 사용하여 Drag and Drop 기능을 구현 하였습니다.
-##### 9️⃣ DiffUtill을 사용하여 RecyclerView의 리스트 업데이트 연산을 보다 편리하게 관리하도록 구현 하였습니다.
+##### 9️⃣ ListAdapter , DiffUtil , AsyncListDiffer를 사용하여 RecyclerView의 Adapter를 구현 하였습니다.
 
