@@ -75,5 +75,5 @@
 ##### 7️⃣ Repository를 사용하여 Data를 관리 하였습니다.
 ##### 8️⃣ ItemTouchHelper를 사용하여 Drag and Drop 기능을 구현 하였습니다.
 ##### 9️⃣ ListAdapter , DiffUtil , AsyncListDiffer를 사용하여 RecyclerView의 Adapter를 구현 하였습니다.
-##### 🔟 Clean Architecture 적용을 위해 각 Layer에 대한 모듈화를 진행하였습니다.
+##### 🔟 Clean Architecture를 위해 Module화를 통해 각 Layer를 분리해주었습니다.
 
