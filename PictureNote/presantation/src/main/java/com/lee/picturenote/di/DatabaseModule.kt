@@ -2,9 +2,9 @@ package com.lee.picturenote.di
 
 import android.content.Context
 import androidx.room.Room
-import com.lee.picturenote.common.DB_NAME
-import com.lee.picturenote.data.local.dao.PictureDAO
-import com.lee.picturenote.data.local.db.FavoriteDatabase
+import com.lee.data.common.DataUtils.Companion.DB_NAME
+import com.lee.data.model.local.dao.PictureDAO
+import com.lee.data.model.local.db.FavoriteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

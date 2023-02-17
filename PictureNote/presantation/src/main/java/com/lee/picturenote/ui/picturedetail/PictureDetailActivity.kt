@@ -13,9 +13,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding3.view.clicks
+import com.lee.domain.model.remote.Picture
 import com.lee.picturenote.R
 import com.lee.picturenote.common.*
-import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.ActivityPictureDetailBinding
 import com.lee.picturenote.ui.picturedetail.viewmodel.DetailViewModel
 import dagger.hilt.android.AndroidEntryPoint

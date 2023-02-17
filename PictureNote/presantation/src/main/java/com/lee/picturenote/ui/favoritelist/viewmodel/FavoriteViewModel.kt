@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.domain.usecase.DeleteFavoritePictureUseCase
+import com.lee.domain.usecase.GetFavoritePictureUseCase
+import com.lee.domain.usecase.UpdateFavoritePictureUseCase
 import com.lee.picturenote.R
 import com.lee.picturenote.common.ResourceProvider
-import com.lee.picturenote.data.local.entity.FavoritePicture
-import com.lee.picturenote.data.local.entity.PictureEntity
-import com.lee.picturenote.interfaces.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val repository: MainRepository ,
+    private val getFavoritePictureUseCase: GetFavoritePictureUseCase ,
+    private val deleteFavoritePictureUseCase: DeleteFavoritePictureUseCase ,
+    private val updateFavoritePictureUseCase: UpdateFavoritePictureUseCase ,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private val _favoritePictures = MutableLiveData<MutableList<FavoritePicture>>()
@@ -39,7 +43,7 @@ class FavoriteViewModel @Inject constructor(
     fun getFavoritePictures() {
         viewModelScope.launch {
             val favoritePicture = withContext(Dispatchers.IO){
-                repository.getFavoritePicture()
+                getFavoritePictureUseCase.invoke()
             }
             if(favoritePicture.isEmpty()){
                 _isEmptyList.value = true
@@ -56,9 +60,10 @@ class FavoriteViewModel @Inject constructor(
     fun deleteFavoritePicture(favoritePicture : FavoritePicture){
         viewModelScope.launch {
             with(favoritePicture){
-                val pictureEntity = PictureEntity(id , picture , index)
+                val pictureEntity =
+                    PictureEntity(id, picture, index)
                 withContext(Dispatchers.IO){
-                    repository.deleteFavoritePicture(pictureEntity)
+                    deleteFavoritePictureUseCase.invoke(pictureEntity)
                     getFavoritePictures()
                 }
             }
@@ -69,17 +74,17 @@ class FavoriteViewModel @Inject constructor(
     /**
      * 즐겨찾기 목록을 업데이트 하는 함수
      * **/
-    fun updateFavoriteMovie() {
+    fun updateFavoritePicture() {
         favoritePictures.value?.let {
             it.forEachIndexed{ index , favoritePicture ->
                 favoritePicture.index = index
                 with(favoritePicture){
-                    val pictureEntity = PictureEntity(id , picture , index)
+                    val pictureEntity = PictureEntity(id, picture, index)
                     CoroutineScope(Dispatchers.IO).launch {
                         // viewModelScope를 통한 Coroutine을 내릴시에 Activity가 내려가고 ViewModel이 정리되면서
                         // Coroutine이 task를 완려하지 못하고 종료 해버리는 현상이 발생하여
                         // 해당 부분은 CoroutineScope를 사용합니다.
-                        repository.updateFavoritePicture(pictureEntity)
+                        updateFavoritePictureUseCase.invoke(pictureEntity)
                     }
                 }
             }

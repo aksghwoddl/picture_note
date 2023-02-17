@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.lee.picturenote.R
 import com.lee.picturenote.common.EXTRA_UPDATE_ID
 import com.lee.picturenote.common.INTENT_RELEASE_FAVORITE
-import com.lee.picturenote.common.adapter.CustomGridLayoutManager
-import com.lee.picturenote.data.local.entity.FavoritePicture
+import com.lee.picturenote.common.wrapper.GridLayoutManagerWrapper
 import com.lee.picturenote.databinding.ActivityFavoriteListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.favoritelist.adapter.FavoriteRecyclerAdapter
@@ -47,7 +46,7 @@ class FavoriteListActivity : AppCompatActivity() {
         favoriteRecyclerAdapter = FavoriteRecyclerAdapter()
         favoriteRecyclerAdapter.setItemClickListener(ItemClickListener())
         binding.favoriteRecyclerView.run {
-            layoutManager = CustomGridLayoutManager(this@FavoriteListActivity , 2)
+            layoutManager = GridLayoutManagerWrapper(this@FavoriteListActivity , 2)
             adapter = favoriteRecyclerAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false // RecyclerView 깜빡임 현상 없애기
         }
@@ -58,7 +57,7 @@ class FavoriteListActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.updateFavoriteMovie() // 화면이 내려가면 update를 시작한다.
+        viewModel.updateFavoritePicture() // 화면이 내려가면 update를 시작한다.
     }
 
     private fun observeData() {
@@ -91,7 +90,7 @@ class FavoriteListActivity : AppCompatActivity() {
      * **/
     private inner class ItemClickListener : OnItemClickListener{
         override fun onClick(view: View, model: Any, position: Int) {
-            if(model is FavoritePicture){
+            if(model is com.lee.domain.model.local.entity.FavoritePicture){
                 val alertBuilder = AlertDialog.Builder(this@FavoriteListActivity)
                 alertBuilder.setTitle(getString(R.string.favorite))
                     .setMessage(R.string.delete_dialog_message)

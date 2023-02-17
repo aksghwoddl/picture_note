@@ -1,19 +1,18 @@
 package com.lee.picturenote.ui.picturelist.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lee.domain.model.remote.Picture
+import com.lee.domain.usecase.GetFavoritePictureUseCase
+import com.lee.domain.usecase.GetPictureListUseCase
 import com.lee.picturenote.R
 import com.lee.picturenote.common.ResourceProvider
-import com.lee.picturenote.data.remote.model.Picture
-import com.lee.picturenote.interfaces.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
@@ -23,7 +22,8 @@ private const val TAG = "ListViewModel"
  * **/
 @HiltViewModel
 class ListViewModel @Inject constructor(
-    private val repository: MainRepository ,
+    private val getPictureListUseCase: GetPictureListUseCase ,
+    private val getFavoritePictureUseCase: GetFavoritePictureUseCase ,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
     private val searchingPictures = mutableListOf<Picture>()
@@ -51,18 +51,12 @@ class ListViewModel @Inject constructor(
         viewModelScope.launch {
             _isProgress.value = true
             try{
-                val response = withContext(Dispatchers.IO){
-                    val bResponse = repository.getPictureList(page.value!!)
+                val searchPictures = withContext(Dispatchers.IO){
+                    val bResponse = getPictureListUseCase.invoke(page.value!!)
                     checkFavorite(bResponse)
                 }
-                if(response.isSuccessful){
-                    searchingPictures.addAll(response.body()!!)
-                    _pictures.value = searchingPictures
-                } else {
-                    Log.d(TAG, "getPictureList: response fail error code is ${response.code()}")
-                    onError(resourceProvider.getString(R.string.response_fail))
-                    _isProgress.value = false
-                }
+                searchingPictures.addAll(searchPictures)
+                _pictures.value = searchingPictures
             } catch (exception : SocketTimeoutException){
                 onError(resourceProvider.getString(R.string.socket_time_out))
                 _isProgress.value = false
@@ -73,9 +67,9 @@ class ListViewModel @Inject constructor(
     /**
      * 불러온 사진들중 즐겨찾기한 사진이 있는지 확인하는 함수
      * **/
-    private suspend fun checkFavorite(response : Response<MutableList<Picture>>) : Response<MutableList<Picture>>{
-        response.body()?.let { responsePictures ->
-            val favoritePictures = repository.getFavoritePicture()
+    private suspend fun checkFavorite(inputList : MutableList<Picture>) : MutableList<Picture>{
+       inputList.let { responsePictures ->
+            val favoritePictures = getFavoritePictureUseCase.invoke()
             favoritePictures.forEach { favoritePicture ->
                 responsePictures.forEach { responsePicture ->
                     if(favoritePicture.id == responsePicture.id){
@@ -84,7 +78,7 @@ class ListViewModel @Inject constructor(
                 }
             }
         }
-        return response
+        return inputList
     }
 
     /**
@@ -99,10 +93,6 @@ class ListViewModel @Inject constructor(
      * **/
     fun setProgress(isProgress : Boolean){
         _isProgress.value = isProgress
-    }
-
-    fun setPictures(list : MutableList<Picture>){
-        _pictures.value = list
     }
 
     /**

@@ -14,13 +14,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.lee.domain.model.remote.Picture
 import com.lee.picturenote.R
 import com.lee.picturenote.common.EXTRA_SELECTED_PICTURE
 import com.lee.picturenote.common.EXTRA_UPDATE_ID
 import com.lee.picturenote.common.INTENT_RELEASE_FAVORITE
 import com.lee.picturenote.common.INTENT_SETTING_FAVORITE
-import com.lee.picturenote.common.adapter.CustomLinearLayoutManager
-import com.lee.picturenote.data.remote.model.Picture
+import com.lee.picturenote.common.wrapper.LinearLayoutManagerWrapper
 import com.lee.picturenote.databinding.ActivityPictureListBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.ui.favoritelist.FavoriteListActivity
@@ -73,7 +73,7 @@ class PictureListActivity : AppCompatActivity() {
         pictureRecyclerAdapter = PictureRecyclerAdapter()
         pictureRecyclerAdapter.setOnItemClickListener(ItemClickListener())
         binding.imageRecyclerView.run {
-            layoutManager = CustomLinearLayoutManager(context)
+            layoutManager = LinearLayoutManagerWrapper(context)
             adapter = pictureRecyclerAdapter
             addOnScrollListener(ScrollListener())
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false // RecyclerView 깜빡임 현상 없애기

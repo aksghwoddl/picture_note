@@ -1,9 +1,8 @@
 package com.lee.picturenote.di
 
+import com.lee.data.api.PictureApi
 import com.lee.picturenote.BuildConfig
 import com.lee.picturenote.common.BASE_URL
-import com.lee.picturenote.common.PICTURE_LIST_URL
-import com.lee.picturenote.data.remote.PictureApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

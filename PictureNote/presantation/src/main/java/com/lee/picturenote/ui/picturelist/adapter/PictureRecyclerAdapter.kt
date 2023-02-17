@@ -8,21 +8,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.lee.domain.model.remote.Picture
 import com.lee.picturenote.R
-import com.lee.picturenote.data.remote.model.Picture
 import com.lee.picturenote.databinding.PictureItemBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
-import com.lee.picturenote.ui.viewholder.PictureViewHolder
+import com.lee.picturenote.common.base.BaseViewHolder
 
-class PictureRecyclerAdapter : ListAdapter< Picture , PictureRecyclerAdapter.PictureListViewHolder>(DiffUtilCallback()) {
+class PictureRecyclerAdapter : ListAdapter<Picture, PictureRecyclerAdapter.BaseListViewHolder>(DiffUtilCallback()) {
     private lateinit var itemClickListener : OnItemClickListener
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PictureListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder {
         val binding = PictureItemBinding.inflate(LayoutInflater.from(parent.context) , parent , false)
-        return PictureListViewHolder(binding)
+        return BaseListViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PictureListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseListViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -30,9 +30,9 @@ class PictureRecyclerAdapter : ListAdapter< Picture , PictureRecyclerAdapter.Pic
         itemClickListener = listener
     }
 
-    inner class PictureListViewHolder(private val binding: PictureItemBinding) : PictureViewHolder(binding) {
+    inner class BaseListViewHolder(private val binding: PictureItemBinding) : BaseViewHolder(binding) {
         override fun bind(data: Any) {
-            if(data is Picture){
+            if(data is com.lee.domain.model.remote.Picture){
                 with(binding){
                     val url = data.downloadUrl
                     Glide.with(binding.root) // ImageView
