@@ -2,7 +2,7 @@ package com.lee.data.model.local.dao
 
 import androidx.room.*
 import com.lee.domain.model.local.entity.FavoritePicture
-import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.data.model.local.entity.PictureEntity
 
 /**
  * 즐겨찾기 DAO interface

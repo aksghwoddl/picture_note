@@ -1,6 +1,6 @@
 package com.lee.domain.usecase
 
-import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.domain.model.local.entity.FavoritePicture
 import com.lee.domain.repository.MainRepository
 import javax.inject.Inject
 
@@ -10,7 +10,7 @@ import javax.inject.Inject
 class AddFavoritePictureUseCase @Inject constructor(
     private val repository: MainRepository
 ) {
-    suspend fun invoke(pictureEntity: PictureEntity){
-        repository.addFavoritePicture(pictureEntity)
+    suspend fun invoke(favoritePicture : FavoritePicture){
+        repository.addFavoritePicture(favoritePicture)
     }
 }

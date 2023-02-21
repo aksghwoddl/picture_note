@@ -3,7 +3,7 @@ package com.lee.data.repository
 import com.lee.data.datasource.local.LocalDataSource
 import com.lee.data.datasource.remote.RemoteDataSource
 import com.lee.data.mapper.DataMapper
-import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.domain.model.local.entity.FavoritePicture
 import com.lee.domain.model.remote.Picture
 import com.lee.domain.repository.MainRepository
 import javax.inject.Inject
@@ -29,11 +29,11 @@ class MainRepositoryImpl @Inject constructor(
     /**
      * Local Repository
      * **/
-    override suspend fun addFavoritePicture(pictureEntity: PictureEntity) = localDataSource.addFavoritePicture(pictureEntity)
+    override suspend fun addFavoritePicture(favoritePicture : FavoritePicture) = localDataSource.addFavoritePicture(favoritePicture)
 
     override suspend fun getFavoritePicture() = localDataSource.getFavoritePicture()
 
-    override suspend fun deleteFavoritePicture(pictureEntity: PictureEntity) = localDataSource.deleteFavoritePicture(pictureEntity)
+    override suspend fun deleteFavoritePicture(favoritePicture: FavoritePicture) = localDataSource.deleteFavoritePicture(favoritePicture)
 
     override suspend fun getFavoritePictureCount() = localDataSource.getFavoritePictureCount()
 
@@ -41,5 +41,5 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoritePictureById(id: String) = localDataSource.getFavoritePictureById(id)
 
-    override suspend fun updateFavoritePicture(pictureEntity: PictureEntity) = localDataSource.updateFavoritePicture(pictureEntity)
+    override suspend fun updateFavoritePicture(favoritePicture : FavoritePicture) = localDataSource.updateFavoritePicture(favoritePicture)
 }

@@ -1,6 +1,8 @@
 package com.lee.data.mapper
 
+import com.lee.data.model.local.entity.PictureEntity
 import com.lee.data.model.remote.PictureDTO
+import com.lee.domain.model.local.entity.FavoritePicture
 import com.lee.domain.model.remote.Picture
 
 object DataMapper {
@@ -21,5 +23,12 @@ object DataMapper {
             Picture( id, author, width, height, downloadUrl , isFavorite)
         }
         return picture
+    }
+
+    fun mapperToPictureEntity(favoritePicture: FavoritePicture) : PictureEntity {
+        val pictureEntity = favoritePicture.run {
+            PictureEntity(id, picture, index)
+        }
+        return pictureEntity
     }
 }

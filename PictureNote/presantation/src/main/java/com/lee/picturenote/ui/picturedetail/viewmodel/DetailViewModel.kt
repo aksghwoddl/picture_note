@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.data.model.local.entity.PictureEntity
+import com.lee.domain.model.local.entity.FavoritePicture
 import com.lee.domain.model.remote.Picture
 import com.lee.domain.usecase.*
 import com.lee.picturenote.R
@@ -140,9 +141,9 @@ class DetailViewModel @Inject constructor(
                 val index = getFavoritePictureCountUseCase.invoke()
                 with(selectedPicture.value!!){
                     this.isFavorite = true
-                    val pictureEntity = PictureEntity(id, this, index)
-                    Log.d(TAG, "addFavorite: $pictureEntity")
-                    addFavoritePictureUseCase.invoke(pictureEntity)
+                    val favoritePicture = FavoritePicture(id, this, index)
+                    Log.d(TAG, "addFavorite: $favoritePicture")
+                    addFavoritePictureUseCase.invoke(favoritePicture)
                     _selectedPicture.postValue(this)
                 }
             }
@@ -159,8 +160,8 @@ class DetailViewModel @Inject constructor(
                 with(selectedPicture.value!!){
                     val index = getIndexByIdUseCase.invoke(id)
                     this.isFavorite = false
-                    val pictureEntity = PictureEntity(id, this, index)
-                    deleteFavoritePictureUseCase.invoke(pictureEntity)
+                    val favoritePicture = FavoritePicture(id, this, index)
+                    deleteFavoritePictureUseCase.invoke(favoritePicture)
                     _selectedPicture.postValue(this)
                 }
             }

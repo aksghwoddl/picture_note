@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lee.domain.model.local.entity.FavoritePicture
-import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.data.model.local.entity.PictureEntity
 import com.lee.domain.usecase.DeleteFavoritePictureUseCase
 import com.lee.domain.usecase.GetFavoritePictureUseCase
 import com.lee.domain.usecase.UpdateFavoritePictureUseCase
@@ -59,14 +59,10 @@ class FavoriteViewModel @Inject constructor(
      * **/
     fun deleteFavoritePicture(favoritePicture : FavoritePicture){
         viewModelScope.launch {
-            with(favoritePicture){
-                val pictureEntity =
-                    PictureEntity(id, picture, index)
                 withContext(Dispatchers.IO){
-                    deleteFavoritePictureUseCase.invoke(pictureEntity)
+                    deleteFavoritePictureUseCase.invoke(favoritePicture)
                     getFavoritePictures()
                 }
-            }
             _toastMessage.value = resourceProvider.getString(R.string.delete_favorite)
         }
     }
@@ -78,14 +74,11 @@ class FavoriteViewModel @Inject constructor(
         favoritePictures.value?.let {
             it.forEachIndexed{ index , favoritePicture ->
                 favoritePicture.index = index
-                with(favoritePicture){
-                    val pictureEntity = PictureEntity(id, picture, index)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        // viewModelScope를 통한 Coroutine을 내릴시에 Activity가 내려가고 ViewModel이 정리되면서
-                        // Coroutine이 task를 완려하지 못하고 종료 해버리는 현상이 발생하여
-                        // 해당 부분은 CoroutineScope를 사용합니다.
-                        updateFavoritePictureUseCase.invoke(pictureEntity)
-                    }
+                CoroutineScope(Dispatchers.IO).launch {
+                    // viewModelScope를 통한 Coroutine을 내릴시에 Activity가 내려가고 ViewModel이 정리되면서
+                    // Coroutine이 task를 완려하지 못하고 종료 해버리는 현상이 발생하여
+                    // 해당 부분은 CoroutineScope를 사용합니다.
+                    updateFavoritePictureUseCase.invoke(favoritePicture)
                 }
             }
         }

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.lee.data.model.local.TypeConverter
 import com.lee.data.model.local.dao.PictureDAO
-import com.lee.domain.model.local.entity.PictureEntity
+import com.lee.data.model.local.entity.PictureEntity
 
 /**
  * RoomDatabase class
