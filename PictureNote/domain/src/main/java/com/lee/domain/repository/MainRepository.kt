@@ -1,6 +1,6 @@
 package com.lee.domain.repository
 
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 import com.lee.domain.model.remote.Picture
 
 /**

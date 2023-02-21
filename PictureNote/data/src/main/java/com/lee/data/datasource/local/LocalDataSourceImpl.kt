@@ -2,7 +2,7 @@ package com.lee.data.datasource.local
 
 import com.lee.data.mapper.DataMapper
 import com.lee.data.model.local.dao.PictureDAO
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 import javax.inject.Inject
 
 class LocalDataSourceImpl @Inject constructor(

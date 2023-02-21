@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lee.picturenote.R
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 import com.lee.picturenote.databinding.PictureItemBinding
 import com.lee.picturenote.interfaces.OnItemClickListener
 import com.lee.picturenote.common.base.BaseViewHolder
@@ -42,7 +42,7 @@ class FavoriteRecyclerAdapter :
 
     inner class FavoriteViewHolder(private val binding: PictureItemBinding) : BaseViewHolder(binding){
         override fun bind(data: Any) {
-            if(data is com.lee.domain.model.local.entity.FavoritePicture){
+            if(data is FavoritePicture){
                 with(binding){
                     val favoritePicture = data.picture
 

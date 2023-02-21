@@ -5,8 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lee.data.model.local.entity.PictureEntity
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 import com.lee.domain.model.remote.Picture
 import com.lee.domain.usecase.*
 import com.lee.picturenote.R

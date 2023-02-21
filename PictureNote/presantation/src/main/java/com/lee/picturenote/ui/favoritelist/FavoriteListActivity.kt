@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.lee.domain.model.local.FavoritePicture
 import com.lee.picturenote.R
 import com.lee.picturenote.common.EXTRA_UPDATE_ID
 import com.lee.picturenote.common.INTENT_RELEASE_FAVORITE
@@ -90,7 +91,7 @@ class FavoriteListActivity : AppCompatActivity() {
      * **/
     private inner class ItemClickListener : OnItemClickListener{
         override fun onClick(view: View, model: Any, position: Int) {
-            if(model is com.lee.domain.model.local.entity.FavoritePicture){
+            if(model is FavoritePicture){
                 val alertBuilder = AlertDialog.Builder(this@FavoriteListActivity)
                 alertBuilder.setTitle(getString(R.string.favorite))
                     .setMessage(R.string.delete_dialog_message)

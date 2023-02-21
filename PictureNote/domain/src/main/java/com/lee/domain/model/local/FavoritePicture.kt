@@ -1,4 +1,4 @@
-package com.lee.domain.model.local.entity
+package com.lee.domain.model.local
 
 import com.lee.domain.model.remote.Picture
 

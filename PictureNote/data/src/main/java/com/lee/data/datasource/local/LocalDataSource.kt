@@ -1,6 +1,6 @@
 package com.lee.data.datasource.local
 
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 
 interface LocalDataSource {
     /**

@@ -1,7 +1,7 @@
 package com.lee.data.model.local.dao
 
 import androidx.room.*
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 import com.lee.data.model.local.entity.PictureEntity
 
 /**
@@ -28,5 +28,5 @@ interface PictureDAO {
     suspend fun getIndexById(id : String) : Int
 
     @Query("SELECT * FROM favorite_tbl WHERE id =:id")
-    suspend fun getFavoritePictureById(id : String) :FavoritePicture?
+    suspend fun getFavoritePictureById(id : String) : FavoritePicture?
 }

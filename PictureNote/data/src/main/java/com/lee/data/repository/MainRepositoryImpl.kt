@@ -3,7 +3,7 @@ package com.lee.data.repository
 import com.lee.data.datasource.local.LocalDataSource
 import com.lee.data.datasource.remote.RemoteDataSource
 import com.lee.data.mapper.DataMapper
-import com.lee.domain.model.local.entity.FavoritePicture
+import com.lee.domain.model.local.FavoritePicture
 import com.lee.domain.model.remote.Picture
 import com.lee.domain.repository.MainRepository
 import javax.inject.Inject
