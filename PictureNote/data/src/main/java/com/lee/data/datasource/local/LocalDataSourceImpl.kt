@@ -1,8 +1,8 @@
 package com.lee.data.datasource.local
 
+import com.lee.data.mapper.DataMapper
 import com.lee.data.model.local.dao.PictureDAO
 import com.lee.domain.model.local.entity.FavoritePicture
-import com.lee.domain.model.local.entity.PictureEntity
 import javax.inject.Inject
 
 class LocalDataSourceImpl @Inject constructor(
@@ -11,8 +11,8 @@ class LocalDataSourceImpl @Inject constructor(
     /**
      * Room에 즐겨찾기 저장하기
      * **/
-    override suspend fun addFavoritePicture(pictureEntity: PictureEntity) {
-        pictureDAO.addFavoritePicture(pictureEntity)
+    override suspend fun addFavoritePicture(favoritePicture : FavoritePicture) {
+        pictureDAO.addFavoritePicture(DataMapper.mapperToPictureEntity(favoritePicture))
     }
 
     /**
@@ -25,8 +25,8 @@ class LocalDataSourceImpl @Inject constructor(
     /**
      * Room으로부터 즐겨찾기 삭제하기
      * **/
-    override suspend fun deleteFavoritePicture(pictureEntity: PictureEntity) {
-        pictureDAO.deleteFavoritePicture(pictureEntity)
+    override suspend fun deleteFavoritePicture(favoritePicture : FavoritePicture) {
+        pictureDAO.deleteFavoritePicture(DataMapper.mapperToPictureEntity(favoritePicture))
     }
 
     /**
@@ -53,7 +53,7 @@ class LocalDataSourceImpl @Inject constructor(
     /**
      * Room에 저장된 즐겨찾기 정보 업데이트 하기 (Index 변경을 위해)
      * **/
-    override suspend fun updateFavoritePicture(pictureEntity: PictureEntity) {
-        pictureDAO.updatePicture(pictureEntity)
+    override suspend fun updateFavoritePicture(favoritePicture : FavoritePicture) {
+        pictureDAO.updatePicture(DataMapper.mapperToPictureEntity(favoritePicture))
     }
 }
