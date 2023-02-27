@@ -11,6 +11,8 @@ import com.lee.picturenote.R
 import com.lee.picturenote.common.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
@@ -52,8 +54,8 @@ class ListViewModel @Inject constructor(
             _isProgress.value = true
             try{
                 val searchPictures = withContext(Dispatchers.IO){
-                    val bResponse = getPictureListUseCase.invoke(page.value!!)
-                    checkFavorite(bResponse)
+                    val response = getPictureListUseCase.invoke(page.value!!)
+                    checkFavorite(response)
                 }
                 searchingPictures.addAll(searchPictures)
                 _pictures.value = searchingPictures
@@ -68,16 +70,16 @@ class ListViewModel @Inject constructor(
      * 불러온 사진들중 즐겨찾기한 사진이 있는지 확인하는 함수
      * **/
     private suspend fun checkFavorite(inputList : MutableList<Picture>) : MutableList<Picture>{
-       inputList.let { responsePictures ->
-            val favoritePictures = getFavoritePictureUseCase.invoke()
-            favoritePictures.forEach { favoritePicture ->
-                responsePictures.forEach { responsePicture ->
-                    if(favoritePicture.id == responsePicture.id){
-                        responsePicture.isFavorite = true
-                    }
-                }
-            }
-        }
+           val favoritePictures = getFavoritePictureUseCase.invoke()
+           val favoriteFlow = favoritePictures.asFlow()
+           val responseFlow = inputList.asFlow()
+           favoriteFlow.collect{ favoritePicture ->
+               responseFlow.filter { picture ->
+                   picture.id == favoritePicture.id
+               }.collect{
+                   it.isFavorite = true
+               }
+           }
         return inputList
     }
 
